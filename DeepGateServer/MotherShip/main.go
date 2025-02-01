@@ -1,11 +1,13 @@
+// host_b/main.go
 package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
+
+	"GoPacks/discovery"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
@@ -20,11 +22,6 @@ var (
 	mongoClient     *mongo.Client
 	mongoCollection *mongo.Collection
 )
-
-type HostStatus struct {
-	HostID string `json:"host_id" bson:"host_id"`
-	Status string `json:"status" bson:"status"`
-}
 
 func init() {
 	// Initialize Redis client
@@ -42,7 +39,18 @@ func init() {
 	mongoCollection = mongoClient.Database("server_management").Collection("hosts")
 }
 
+type HostStatus struct {
+	HostID string `json:"host_id" bson:"host_id"`
+	Status string `json:"status" bson:"status"`
+}
+
 func main() {
+	// Initialize service discovery
+	sd := discovery.NewServiceDiscovery("load-balancer", 8080)
+	if err := sd.Advertise(context.Background()); err != nil {
+		log.Fatalf("Failed to start service discovery: %v", err)
+	}
+
 	r := gin.Default()
 
 	r.POST("/ping", func(c *gin.Context) {
@@ -51,8 +59,6 @@ func main() {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-
-		fmt.Printf("Registering host: %s!\n", hostStatus)
 
 		// Store in Redis with a TTL
 		err := redisClient.Set(ctx, hostStatus.HostID, hostStatus.Status, 5*time.Minute).Err()

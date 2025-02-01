@@ -10,7 +10,8 @@ import (
 	"os"
 	"time"
 
-	"./discovery"
+	"GoPacks/discovery"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,7 +27,7 @@ func main() {
 		log.Fatalf("Failed to start service discovery: %v", err)
 	}
 
-	r := gin.Default()
+	_ = gin.Default()
 
 	// Get Host B's address from environment variables or configuration
 	hostBAddress := os.Getenv("HOST_B_ADDRESS")
