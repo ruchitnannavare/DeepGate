@@ -17,6 +17,7 @@ type InfoPackage struct {
 	Identifier int    `json:"identifier"` // 0 for host, 1 for client
 	HostName   string `json:"host_name"`
 	Timestamp  int64  `json:"timestamp"`
+	HostPort   string `json:"host_port"`
 }
 
 // DatabaseConnections holds connections for MongoDB and Redis
