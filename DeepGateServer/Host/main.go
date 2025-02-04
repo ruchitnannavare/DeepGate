@@ -2,76 +2,130 @@ package main
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
-	"GoPacks/discovery"
+	databinding "Pkgs/DataBinding"
 
 	"github.com/gin-gonic/gin"
 )
 
-type HostStatus struct {
-	HostID string `json:"host_id"`
-	Status string `json:"status"`
+type HostServer struct {
+	logger   *log.Logger
+	nodeIP   string
+	hostName string
+}
+
+func NewHostServer() *HostServer {
+	hostName, _ := os.Hostname()
+	return &HostServer{
+		logger:   databinding.ConfigureLogger(),
+		hostName: hostName,
+	}
+}
+
+func (hs *HostServer) ScanNetwork() {
+	hs.logger.Println("Starting network scan...")
+
+	// Get local network IP range
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		hs.logger.Printf("Error getting network interfaces: %v", err)
+		return
+	}
+
+	for _, addr := range addrs {
+		if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+			if ipnet.IP.To4() != nil {
+				baseIP := strings.Join(strings.Split(ipnet.IP.String(), ".")[:3], ".") + "."
+
+				for i := 1; i <= 254; i++ {
+					testIP := fmt.Sprintf("%s%d", baseIP, i)
+
+					// Skip the current machine's IP
+					if testIP == ipnet.IP.String() {
+						continue
+					}
+
+					go hs.tryPingNode(testIP)
+				}
+			}
+		}
+	}
+}
+
+func (hs *HostServer) getLocalIP() string {
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		return ""
+	}
+	for _, addr := range addrs {
+		if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+			if ipnet.IP.To4() != nil {
+				return ipnet.IP.String()
+			}
+		}
+	}
+	return ""
+}
+
+func (hs *HostServer) tryPingNode(ip string) {
+	url := fmt.Sprintf("http://%s:8080/ping", ip)
+
+	infoPackage := databinding.InfoPackage{
+		IPAddress:  hs.getLocalIP(),
+		Identifier: 0, // Host
+		HostName:   hs.hostName,
+		Timestamp:  time.Now().Unix(),
+	}
+
+	jsonData, _ := json.Marshal(infoPackage)
+
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		hs.logger.Printf("Ping to %s failed: %v", ip, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusOK {
+		hs.logger.Printf("Node found at %s!", ip)
+		hs.nodeIP = ip
+		// Optionally, you might want to stop further scanning here
+		return
+	}
+}
+
+func (hs *HostServer) SetupRoutes() *gin.Engine {
+	r := gin.Default()
+
+	// Add any local HTTP routes as needed
+	r.GET("/status", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"node_ip": hs.nodeIP,
+			"status":  "ready",
+		})
+	})
+
+	return r
+}
+
+func (hs *HostServer) Run() {
+	// First scan the network
+	hs.ScanNetwork()
+
+	r := hs.SetupRoutes()
+	hs.logger.Println("Host server starting on localhost:9090")
+	r.Run("localhost:9090")
 }
 
 func main() {
-	// Initialize service discovery
-	sd := discovery.NewServiceDiscovery("load-balancer", 8080)
-	if err := sd.Advertise(context.Background()); err != nil {
-		log.Fatalf("Failed to start service discovery: %v", err)
-	}
-
-	_ = gin.Default()
-
-	// Get Host B's address from environment variables or configuration
-	hostBAddress := os.Getenv("HOST_B_ADDRESS")
-	if hostBAddress == "" {
-		log.Fatal("HOST_B_ADDRESS environment variable is not set")
-	}
-
-	// Unique identifier for Host C
-	hostID := "host_c_1" // This should be unique for each instance of Host C
-
-	// Register with Host B
-	registerWithHostB(hostBAddress, hostID)
-
-	// Wait for further requests (this is a placeholder for actual request handling logic)
-	select {}
-}
-
-func registerWithHostB(hostBAddress, hostID string) {
-	hostStatus := HostStatus{
-		HostID: hostID,
-		Status: "alive",
-	}
-
-	data, err := json.Marshal(hostStatus)
-	if err != nil {
-		log.Fatalf("Failed to marshal host status: %v", err)
-	}
-
-	url := fmt.Sprintf("http://%s/ping", hostBAddress)
-	for {
-		resp, err := http.Post(url, "application/json", bytes.NewBuffer(data))
-		if err != nil {
-			log.Printf("Failed to register with Host B: %v", err)
-		} else {
-			resp.Body.Close()
-			if resp.StatusCode == http.StatusOK {
-				log.Println("Successfully registered with Host B")
-				break
-			} else {
-				log.Printf("Failed to register with Host B, status code: %d", resp.StatusCode)
-			}
-		}
-
-		// Retry after a delay
-		time.Sleep(10 * time.Second)
-	}
+	hostServer := NewHostServer()
+	hostServer.Run()
 }
