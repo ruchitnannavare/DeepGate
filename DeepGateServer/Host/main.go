@@ -16,6 +16,8 @@ import (
 
 	databinding "Pkgs/DataBinding"
 
+	"host/services"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,13 +25,16 @@ type HostServer struct {
 	logger   *log.Logger
 	nodeIP   string
 	hostName string
+	ollama   *services.APIService
 }
 
 func NewHostServer() *HostServer {
 	hostName, _ := os.Hostname()
+	ollamaClient := services.NewAPIService("http://localhost:11434")
 	return &HostServer{
 		logger:   databinding.ConfigureLogger(),
 		hostName: hostName,
+		ollama:   ollamaClient,
 	}
 }
 
@@ -226,6 +231,18 @@ func (hs *HostServer) SetupRoutes() *gin.Engine {
 			"node_ip": hs.nodeIP,
 			"status":  "ready",
 		})
+	})
+
+	// New endpoint to fetch local model list
+	r.GET("/fetchlocalmodellist", func(c *gin.Context) {
+		models, err := hs.ollama.FetchLocalModelList()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		c.JSON(http.StatusOK, models)
 	})
 
 	return r

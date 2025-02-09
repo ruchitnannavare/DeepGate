@@ -1,4 +1,4 @@
-module Host
+module host
 
 go 1.23.3
 

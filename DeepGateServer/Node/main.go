@@ -10,6 +10,8 @@ import (
 
 	databinding "Pkgs/DataBinding"
 
+	"node/clients"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,6 +19,7 @@ type NodeServer struct {
 	logger             *log.Logger
 	databaseConnection *databinding.DatabaseConnections
 	hostIP             string
+	APIRepo            *clients.APIClient
 }
 
 func NewNodeServer() *NodeServer {
@@ -44,9 +47,18 @@ func (ns *NodeServer) SetupRoutes() *gin.Engine {
 			return
 		}
 
+		// Call the /fetchlocalmodellist API here
+		// http://infopackage.IPAddress:{infoPackage.HostPort}/fetchlocalmodellist
+		// And print the list here
+		resp, err := ns.APIRepo.MakeRequest("GET", fmt.Sprintf("http://%s:%s/fetchlocalmodellist", infoPackage.IPAddress, infoPackage.HostPort), nil, nil)
+		fmt.Print(resp)
+		if err != nil {
+			return
+		}
+
 		// Store in MongoDB
 		collection := ns.databaseConnection.MongoDB.Collection("pings")
-		_, err := collection.InsertOne(context.Background(), infoPackage)
+		_, err = collection.InsertOne(context.Background(), infoPackage)
 		if err != nil {
 			ns.logger.Printf("Failed to store ping in MongoDB: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Storage failed"})
