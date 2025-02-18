@@ -1,0 +1,36 @@
+﻿<Properties NuGet.AddPackagesDialog.IncludePrerelease="True" StartupConfiguration="{EAF584B4-B738-4C51-B173-8B05D574DE8F}|Default">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="DeepGate/MauiProgram.cs">
+    <Files>
+      <File FileName="DeepGate/DeepGate.csproj" />
+      <File FileName="DeepGate/App.xaml" />
+      <File FileName="DeepGate/MainPage.xaml" Line="7" Column="11" />
+      <File FileName="DeepGate/MainPage.xaml.cs" />
+      <File FileName="DeepGate/MauiProgram.cs" Line="7" Column="12" />
+      <File FileName="DeepGate/App.xaml.cs" Line="32" Column="2" />
+      <File FileName="../../../Library/Caches/VisualStudio/17.0/Symbols/raw.githubusercontent.com/xamarin/xamarin-macios/0ee28379dd5e85c830bad0270d064bbcec467647/src/UIKit/UIApplication.cs" />
+      <File FileName="DeepGate/Platforms/MacCatalyst/Program.cs" />
+      <File FileName="DeepGate/ViewModels/MainPageViewModel.cs" Line="6" Column="15" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="DeepGate" expanded="True">
+            <Node name="DeepGate">
+              <Node name="MauiProgram.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MultiItemStartupConfigurations />
+  <Debugger.DebugSourceFolders>
+    <String>/Users/ruchitnannavare/Library/Caches/VisualStudio/17.0/Symbols/raw.githubusercontent.com/xamarin/xamarin-macios/0ee28379dd5e85c830bad0270d064bbcec467647</String>
+  </Debugger.DebugSourceFolders>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.ItemProperties.DeepGate PreferredExecutionTarget="MyAppleMacCatalystID" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

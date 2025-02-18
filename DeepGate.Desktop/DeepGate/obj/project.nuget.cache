@@ -1,0 +1,32 @@
+{
+  "version": 2,
+  "dgSpecHash": "zOtNZ2D1l8wzbu+VCj5O0McmACU2kWMWXQEQj8uSX/+wd2gwRRv4xvuKp/LrHH2hMXKsyWRX5JMTdrZuxc5wsw==",
+  "success": true,
+  "projectFilePath": "/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/DeepGate.csproj",
+  "expectedPackageFiles": [
+    "/Users/ruchitnannavare/.nuget/packages/communitytoolkit.maui/6.0.0/communitytoolkit.maui.6.0.0.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/communitytoolkit.maui.core/6.0.0/communitytoolkit.maui.core.6.0.0.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/communitytoolkit.mvvm/8.0.0/communitytoolkit.mvvm.8.0.0.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/corebts.maui.shieldmvvm/1.0.0/corebts.maui.shieldmvvm.1.0.0.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/microsoft.extensions.configuration/8.0.0/microsoft.extensions.configuration.8.0.0.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/microsoft.extensions.configuration.abstractions/8.0.0/microsoft.extensions.configuration.abstractions.8.0.0.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/microsoft.extensions.dependencyinjection/8.0.1/microsoft.extensions.dependencyinjection.8.0.1.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.2/microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/microsoft.extensions.logging/8.0.1/microsoft.extensions.logging.8.0.1.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/microsoft.extensions.logging.abstractions/8.0.2/microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/microsoft.extensions.logging.debug/8.0.1/microsoft.extensions.logging.debug.8.0.1.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/microsoft.extensions.options/8.0.2/microsoft.extensions.options.8.0.2.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/microsoft.extensions.primitives/8.0.0/microsoft.extensions.primitives.8.0.0.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/microsoft.maui.controls/8.0.83/microsoft.maui.controls.8.0.83.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/microsoft.maui.controls.build.tasks/8.0.83/microsoft.maui.controls.build.tasks.8.0.83.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/microsoft.maui.controls.compatibility/8.0.83/microsoft.maui.controls.compatibility.8.0.83.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/microsoft.maui.controls.core/8.0.83/microsoft.maui.controls.core.8.0.83.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/microsoft.maui.controls.xaml/8.0.83/microsoft.maui.controls.xaml.8.0.83.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/microsoft.maui.core/8.0.83/microsoft.maui.core.8.0.83.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/microsoft.maui.essentials/8.0.83/microsoft.maui.essentials.8.0.83.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/microsoft.maui.graphics/8.0.83/microsoft.maui.graphics.8.0.83.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/microsoft.maui.resizetizer/8.0.83/microsoft.maui.resizetizer.8.0.83.nupkg.sha512",
+    "/Users/ruchitnannavare/.nuget/packages/microsoft.net.illink.tasks/8.0.0/microsoft.net.illink.tasks.8.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
