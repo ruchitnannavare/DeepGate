@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:acrylic="clr-namespace:Xe.AcrylicView;assembly=Xe.AcrylicView"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Margin="5, 10"
+    x:Class="DeepGate.Views.ReceivedMessageItemTemplate">
+    <ContentView.Content>
+        <Grid
+            ColumnDefinitions="0.9*, 0.2*">
+            <Border
+                StrokeShape="RoundRectangle 30"
+                Padding="15, 10"
+                StrokeThickness="0"
+                BackgroundColor="#70000000"
+                HorizontalOptions="Start"
+                HeightRequest="50">
+                <Editor
+                    HorizontalOptions="FillAndExpand"
+                    IsReadOnly="True"
+                    Text="{Binding Content}"/>
+            </Border>
+
+
+        </Grid>
+    </ContentView.Content>
+</ContentView>

@@ -1,36 +1,64 @@
 ﻿<Properties NuGet.AddPackagesDialog.IncludePrerelease="True" StartupConfiguration="{EAF584B4-B738-4C51-B173-8B05D574DE8F}|Default">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="DeepGate/MauiProgram.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="DeepGate/Views/MainPage.xaml">
     <Files>
-      <File FileName="DeepGate/DeepGate.csproj" />
-      <File FileName="DeepGate/App.xaml" />
-      <File FileName="DeepGate/MainPage.xaml" Line="7" Column="11" />
-      <File FileName="DeepGate/MainPage.xaml.cs" />
-      <File FileName="DeepGate/MauiProgram.cs" Line="7" Column="12" />
-      <File FileName="DeepGate/App.xaml.cs" Line="32" Column="2" />
-      <File FileName="../../../Library/Caches/VisualStudio/17.0/Symbols/raw.githubusercontent.com/xamarin/xamarin-macios/0ee28379dd5e85c830bad0270d064bbcec467647/src/UIKit/UIApplication.cs" />
-      <File FileName="DeepGate/Platforms/MacCatalyst/Program.cs" />
-      <File FileName="DeepGate/ViewModels/MainPageViewModel.cs" Line="6" Column="15" />
+      <File FileName="DeepGate/ViewModels/MainPageViewModel.cs" Line="91" Column="28" />
+      <File FileName="DeepGate/MauiProgram.cs" Line="45" Column="9" />
+      <File FileName="DeepGate/Models/Responses/WallhavenResponse.cs" />
+      <File FileName="DeepGate/Models/Chat/Message.cs" />
+      <File FileName="DeepGate/Models/Chat/ChatCompletion.cs" />
+      <File FileName="DeepGate/Helpers/Constants.cs" />
+      <File FileName="DeepGate/Models/Chat/ChatHistory.cs" />
+      <File FileName="DeepGate/Interfaces/IWallPaperService.cs" />
+      <File FileName="DeepGate/Services/WallPaperService.cs" />
+      <File FileName="DeepGate/Views/Templates/MessageTemplateSelector.cs" Line="7" Column="26" />
+      <File FileName="DeepGate/Views/Templates/ReceivedMessageItemTemplate.xaml.cs" Line="10" Column="6" />
+      <File FileName="DeepGate/Views/Templates/TypingMessageTemplate.xaml.cs" Line="3" Column="25" />
+      <File FileName="DeepGate/Views/Templates/TypingMessageTemplate.xaml" Line="5" Column="9" />
+      <File FileName="DeepGate/Views/Templates/UserTextMessageItemTemplate.xaml" Line="24" Column="15" />
+      <File FileName="DeepGate/Views/MainPage.xaml.cs" Line="16" Column="2" />
+      <File FileName="DeepGate/App.xaml.cs" Line="15" Column="59" />
+      <File FileName="DeepGate/Views/Templates/UserTextMessageItemTemplate.xaml.cs" Line="1" Column="1" />
+      <File FileName="DeepGate/Views/Templates/ReceivedMessageItemTemplate.xaml" Line="17" Column="41" NotebookId="1" />
+      <File FileName="DeepGate/Views/MainPage.xaml" Line="77" Column="31" NotebookId="1" />
+      <File FileName="DeepGate/DeepGate.csproj" Line="81" Column="54" NotebookId="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="DeepGate" expanded="True">
-            <Node name="DeepGate">
-              <Node name="MauiProgram.cs" selected="True" />
+            <Node name="DeepGate" selected="True">
+              <Node name="Dependencies" expanded="True" />
+              <Node name="Models" expanded="True">
+                <Node name="Chat" expanded="True" />
+                <Node name="Responses" expanded="True" />
+              </Node>
+              <Node name="Resources" expanded="True">
+                <Node name="Images" expanded="True" />
+              </Node>
+              <Node name="Services" expanded="True" />
+              <Node name="ViewModels" expanded="True" />
+              <Node name="Views" expanded="True">
+                <Node name="Templates" expanded="True" />
+              </Node>
+              <Node name="App.xaml" expanded="True" />
             </Node>
           </Node>
         </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MultiItemStartupConfigurations />
   <Debugger.DebugSourceFolders>
     <String>/Users/ruchitnannavare/Library/Caches/VisualStudio/17.0/Symbols/raw.githubusercontent.com/xamarin/xamarin-macios/0ee28379dd5e85c830bad0270d064bbcec467647</String>
   </Debugger.DebugSourceFolders>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint enabled="false" file="/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/ViewModels/MainPageViewModel.cs" relfile="DeepGate/ViewModels/MainPageViewModel.cs" line="32" column="1" />
+      <Breakpoint enabled="false" file="/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/ViewModels/MainPageViewModel.cs" relfile="DeepGate/ViewModels/MainPageViewModel.cs" line="42" column="1" />
+      <Breakpoint enabled="false" file="/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/ViewModels/MainPageViewModel.cs" relfile="DeepGate/ViewModels/MainPageViewModel.cs" line="39" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.ItemProperties.DeepGate PreferredExecutionTarget="MyAppleMacCatalystID" />
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.DeepGate PreferredExecutionTarget="MyAppleMacCatalystID" />
 </Properties>

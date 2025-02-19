@@ -1,14 +1,18 @@
-﻿using UIKit;
+﻿using ConciergeGenie.Helpers;
+using DeepGate.Views;
+using UIKit;
 
 namespace DeepGate;
 
 public partial class App : Application
 {
-	public App()
+	public App(IServiceProvider serviceProvider)
 	{
 		InitializeComponent();
-
-		MainPage = new MainPage();
+        // This licence key is required for including syncfusion controls The
+        // key is added by the build pipeline
+        Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(ApiKeys.SyncfusionLicenceKey);
+        MainPage = serviceProvider.GetService<MainPage>();
 	}
 
     //protected override Window CreateWindow(IActivationState activationState)

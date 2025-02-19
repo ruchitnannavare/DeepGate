@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DeepGate")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+0625ac2f96315ab4776dc0127c45d2cc2937b063")]
 [assembly: System.Reflection.AssemblyProductAttribute("DeepGate")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DeepGate")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

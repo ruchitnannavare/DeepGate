@@ -34,12 +34,58 @@
           "warnAsError": [
             "NU1605"
           ]
-        }
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net8.0-maccatalyst18.0": {
           "targetAlias": "net8.0-maccatalyst",
           "dependencies": {
+            "AathifMahir.Maui.MauiIcons.Core": {
+              "target": "Package",
+              "version": "[4.0.0, )"
+            },
+            "AathifMahir.Maui.MauiIcons.Cupertino": {
+              "target": "Package",
+              "version": "[4.0.0, )"
+            },
+            "AathifMahir.Maui.MauiIcons.Fluent": {
+              "target": "Package",
+              "version": "[4.0.0, )"
+            },
+            "AathifMahir.Maui.MauiIcons.FontAwesome": {
+              "target": "Package",
+              "version": "[4.0.0, )"
+            },
+            "AathifMahir.Maui.MauiIcons.FontAwesome.Brand": {
+              "target": "Package",
+              "version": "[4.0.0, )"
+            },
+            "AathifMahir.Maui.MauiIcons.FontAwesome.Solid": {
+              "target": "Package",
+              "version": "[4.0.0, )"
+            },
+            "AathifMahir.Maui.MauiIcons.Material": {
+              "target": "Package",
+              "version": "[4.0.0, )"
+            },
+            "AathifMahir.Maui.MauiIcons.Material.Outlined": {
+              "target": "Package",
+              "version": "[4.0.0, )"
+            },
+            "AathifMahir.Maui.MauiIcons.SegoeFluent": {
+              "target": "Package",
+              "version": "[4.0.0, )"
+            },
+            "AcrylicView.Maui": {
+              "target": "Package",
+              "version": "[2.1.3, )"
+            },
             "CoreBTS.Maui.ShieldMVVM": {
               "target": "Package",
               "version": "[1.0.0, )"
@@ -50,17 +96,57 @@
             },
             "Microsoft.Maui.Controls": {
               "target": "Package",
-              "version": "[8.0.83, )"
+              "version": "[8.0.100, )"
             },
             "Microsoft.Maui.Controls.Compatibility": {
               "target": "Package",
-              "version": "[8.0.83, )"
+              "version": "[8.0.100, )"
             },
             "Microsoft.NET.ILLink.Tasks": {
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.0, )",
+              "version": "[8.0.12, )",
               "autoReferenced": true
+            },
+            "Mopups": {
+              "target": "Package",
+              "version": "[1.3.2, )"
+            },
+            "Syncfusion.Licensing": {
+              "target": "Package",
+              "version": "[26.2.14, )"
+            },
+            "Syncfusion.Maui.Buttons": {
+              "target": "Package",
+              "version": "[26.2.14, )"
+            },
+            "Syncfusion.Maui.Core": {
+              "target": "Package",
+              "version": "[26.2.14, )"
+            },
+            "Syncfusion.Maui.ListView": {
+              "target": "Package",
+              "version": "[26.2.14, )"
+            },
+            "Syncfusion.Maui.NavigationDrawer": {
+              "target": "Package",
+              "version": "[26.2.14, )"
+            },
+            "Syncfusion.Maui.Popup": {
+              "target": "Package",
+              "version": "[26.2.14, )"
+            },
+            "Syncfusion.Maui.ProgressBar": {
+              "target": "Package",
+              "version": "[26.2.14, )"
+            },
+            "Syncfusion.Maui.PullToRefresh": {
+              "target": "Package",
+              "version": "[26.2.14, )"
+            },
+            "Syncfusion.Maui.TabView": {
+              "target": "Package",
+              "version": "[26.2.14, )"
             }
           },
           "imports": [
@@ -75,6 +161,16 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.12, 8.0.12]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.12, 8.0.12]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.MacCatalyst": {
               "privateAssets": "all"
@@ -83,7 +179,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.102/PortableRuntimeIdentifierGraph.json"
         }
       },
       "runtimes": {

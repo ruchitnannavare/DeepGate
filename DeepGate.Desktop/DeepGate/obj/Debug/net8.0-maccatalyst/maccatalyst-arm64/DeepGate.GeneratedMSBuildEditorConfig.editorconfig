@@ -22,12 +22,6 @@ build_metadata.AdditionalFiles.ManifestResourceName = DeepGate.App.xaml
 build_metadata.AdditionalFiles.TargetPath = App.xaml
 build_metadata.AdditionalFiles.RelativePath = App.xaml
 
-[/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/MainPage.xaml]
-build_metadata.AdditionalFiles.GenKind = Xaml
-build_metadata.AdditionalFiles.ManifestResourceName = DeepGate.MainPage.xaml
-build_metadata.AdditionalFiles.TargetPath = MainPage.xaml
-build_metadata.AdditionalFiles.RelativePath = MainPage.xaml
-
 [/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/Resources/Styles/Colors.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = DeepGate.Resources.Styles.Colors.xaml
@@ -39,3 +33,27 @@ build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = DeepGate.Resources.Styles.Styles.xaml
 build_metadata.AdditionalFiles.TargetPath = Resources/Styles/Styles.xaml
 build_metadata.AdditionalFiles.RelativePath = Resources/Styles/Styles.xaml
+
+[/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/Views/MainPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = DeepGate.Views.MainPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views/MainPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views/MainPage.xaml
+
+[/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/Views/Templates/ReceivedMessageItemTemplate.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = DeepGate.Views.Templates.ReceivedMessageItemTemplate.xaml
+build_metadata.AdditionalFiles.TargetPath = Views/Templates/ReceivedMessageItemTemplate.xaml
+build_metadata.AdditionalFiles.RelativePath = Views/Templates/ReceivedMessageItemTemplate.xaml
+
+[/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/Views/Templates/TypingMessageTemplate.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = DeepGate.Views.Templates.TypingMessageTemplate.xaml
+build_metadata.AdditionalFiles.TargetPath = Views/Templates/TypingMessageTemplate.xaml
+build_metadata.AdditionalFiles.RelativePath = Views/Templates/TypingMessageTemplate.xaml
+
+[/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/Views/Templates/UserTextMessageItemTemplate.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = DeepGate.Views.Templates.UserTextMessageItemTemplate.xaml
+build_metadata.AdditionalFiles.TargetPath = Views/Templates/UserTextMessageItemTemplate.xaml
+build_metadata.AdditionalFiles.RelativePath = Views/Templates/UserTextMessageItemTemplate.xaml

@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:acrylic="clr-namespace:Xe.AcrylicView;assembly=Xe.AcrylicView"
+             xmlns:vm="clr-namespace:DeepGate.ViewModels"
+             xmlns:sfList="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:views="clr-namespace:DeepGate.Views"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:icons="http://www.aathifmahir.com/dotnet/2022/maui/icons"
+             x:Class="DeepGate.Views.MainPage"
+             Background="Black">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <DataTemplate x:Key="UserTextMessageItemTemplate">
+                <views:UserTextMessageItemTemplate />
+            </DataTemplate>
+
+            <DataTemplate x:Key="ReceivedMessageItemTemplate">
+                <views:ReceivedMessageItemTemplate />
+            </DataTemplate>
+            
+            <DataTemplate x:Key="TypingMessageTemplate">
+                <views:TypingMessageTemplate />
+            </DataTemplate>
+
+            <views:MessageDataTemplateSelector
+                x:Key="MessageDataTemplateSelector"             
+                UserMessageTemplate="{StaticResource UserTextMessageItemTemplate}"    
+                ReceivedMessageTemplate="{StaticResource ReceivedMessageItemTemplate}"
+                ThinkingMessageTemplate="{StaticResource TypingMessageTemplate}"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <!--Background grid-->
+    <Grid>
+        <Image
+            Aspect="AspectFill"
+            Source="{Binding ImageUrl}"/>
+
+        <Border
+            BackgroundColor="#40000000"
+            StrokeThickness="0"/>
+
+        <!--Container Grid-->
+        <Grid
+            Padding="10"
+            ColumnSpacing="10"
+            ColumnDefinitions="0.3*, 0.7*">
+
+            <!--Side bar-->
+            <acrylic:AcrylicView
+                CornerRadius="30"
+                EffectStyle="Dark">
+
+
+            </acrylic:AcrylicView>
+
+            <!--Mane Panel-->
+            <Grid
+                Grid.Column="1"
+                RowDefinitions="Auto, *, Auto">
+
+                <!--Message Collection\ ItemsSource="{Binding ChatCompletion.Messages}"-->
+                <sfList:SfListView
+                    HorizontalOptions="Fill"
+                    Grid.Row="1"
+                    AutoFitMode="DynamicHeight"
+                    ItemsSource="{Binding ChatCompletion.Messages}"
+                    ItemTemplate="{StaticResource MessageDataTemplateSelector}">
+
+                    <!--Chat Initialization View-->
+                    <sfList:SfListView.EmptyView>
+                        <Grid>
+                            <Border
+                                BackgroundColor="#30FFFFFF"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 48"
+                                Padding="-26"
+                                WidthRequest="75"
+                                HeightRequest="75">
+                                <Image
+                                    Opacity="0.5"
+                                    Margin="0"
+                                    Aspect="AspectFit"
+                                    Source="orca.png"/>
+                            </Border>
+
+                        </Grid>
+                    </sfList:SfListView.EmptyView>
+                </sfList:SfListView>
+
+                <!--Input Control-->
+                <acrylic:AcrylicView
+                    MaximumHeightRequest="400"
+                    VerticalOptions="EndAndExpand"
+                    Grid.Row="2"
+                    CornerRadius="30"
+                    EffectStyle="Dark">
+                    <Grid
+                        Padding="10"
+                        RowDefinitions="*, Auto">
+
+                        <!--Message Editor -->
+                        <Editor
+                            AutoSize="Disabled"
+                            Placeholder="message deepseek-r1"/>
+
+                        <Label
+                            HorizontalOptions="End"
+                            Grid.Row="1"
+                            FontSize="40"
+                            icons:MauiIcon.Value="{icons:Cupertino Icon=ArrowupCircleFill}"/>
+                    </Grid>
+                </acrylic:AcrylicView>
+            </Grid>
+        </Grid>
+    </Grid>
+
+</ContentPage>
