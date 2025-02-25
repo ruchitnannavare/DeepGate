@@ -53,17 +53,11 @@ func (o *OllamaClient) LoadLocalModel(modelName string) error {
 	start := time.Now()
 	o.logger.Printf("Starting to load model: %s", modelName)
 
-	payload := map[string]string{
-		"name": modelName,
+	jsonPayload := map[string]interface{}{
+		"model": modelName,
 	}
 
-	jsonPayload, err := json.Marshal(payload)
-	if err != nil {
-		o.logger.Printf("Error marshaling payload: %v", err)
-		return err
-	}
-
-	respBody, err := o.api.MakeRequest("POST", "/api/pull", bytes.NewBuffer(jsonPayload), nil)
+	respBody, err := o.api.MakeRequest("POST", "/api/generate", jsonPayload, nil)
 	if err != nil {
 		o.logger.Printf("Error loading model %s: %v", modelName, err)
 		return err
@@ -168,9 +162,8 @@ func (o *OllamaClient) StreamChatCompletion(chat databinding.ChatCompletion, res
 	// Process each chunk of the streaming response
 	for scanner.Scan() {
 		line := scanner.Text()
-		if line == "" {
-			continue
-		}
+
+		fmt.Println("Received line:", line)
 
 		var streamResp databinding.StreamResponse
 		if err := json.Unmarshal([]byte(line), &streamResp); err != nil {

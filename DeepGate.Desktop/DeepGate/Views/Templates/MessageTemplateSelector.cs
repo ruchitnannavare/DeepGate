@@ -21,10 +21,10 @@ internal class MessageDataTemplateSelector : DataTemplateSelector
         {
             case "user": 
                 return UserMessageTemplate;
-            case "system":
+            case "assistant":
                 return ReceivedMessageTemplate;
             default:
-                return ThinkingMessageTemplate;
+                return new DataTemplate();
         }
     }
 }

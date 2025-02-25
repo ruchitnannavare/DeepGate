@@ -233,9 +233,11 @@ func (hs *HostServer) SetupRoutes() *gin.Engine {
 	return r
 }
 
-func (hs *HostServer) Run() {
-	// First scan the network
-	hs.ScanNetwork()
+func (hs *HostServer) Run(skipScan bool) {
+	// Ask whether to scan the network
+	if skipScan {
+		hs.ScanNetwork()
+	}
 
 	r := hs.SetupRoutes()
 	hs.logger.Println("Host server starting on 0.0.0.0:9090")
@@ -243,6 +245,13 @@ func (hs *HostServer) Run() {
 }
 
 func main() {
+	//reader := bufio.NewReader(os.Stdin)
+	//fmt.Print("Do you want to run a network scan? (yes/no): ")
+	//input, _ := reader.ReadString('\n')
+	//input = strings.TrimSpace(strings.ToLower(input))
+
+	//skipScan := (input == "yes" || input == "y")
+
 	hostServer := NewHostServer()
-	hostServer.Run()
+	hostServer.Run(false)
 }

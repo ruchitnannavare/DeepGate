@@ -66,6 +66,11 @@
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/Microsoft.Maui.Essentials.dll
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/Microsoft.Maui.Graphics.dll
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/Mopups.dll
+/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/Newtonsoft.Json.dll
+/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/SQLite-net.dll
+/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/SQLitePCLRaw.batteries_v2.dll
+/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/SQLitePCLRaw.core.dll
+/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/SQLitePCLRaw.provider.e_sqlite3.dll
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/Syncfusion.Licensing.dll
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/Syncfusion.Maui.Buttons.dll
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/Syncfusion.Maui.Core.dll
@@ -249,6 +254,7 @@
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/Microsoft.MacCatalyst.dll
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/DeepGate.pdb
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/Microsoft.MacCatalyst.pdb
+/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/libe_sqlite3.dylib
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/aot-instances.aotdata.arm64
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/System.Private.CoreLib.aotdata.arm64
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MacOS//DeepGate

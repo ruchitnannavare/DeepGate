@@ -3,18 +3,19 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using DeepGate.Interfaces;
+using Newtonsoft.Json;
 
 namespace DeepGate.Services;
 
 public class ApiService : IApiService
 {
-    private readonly HttpClient httpClient;
+    public HttpClient HttpClient { get; }
     private readonly string apiKey;
     private readonly JsonSerializerOptions jsonOptions;
 
-    public ApiService(HttpClient httpClient)
+    public ApiService(HttpClient HttpClient)
     {
-        this.httpClient = httpClient;
+        this.HttpClient = HttpClient;
         apiKey = "your_api_key_here"; // Replace with secure storage if needed
 
         // Set default JSON options to use camelCase
@@ -25,26 +26,27 @@ public class ApiService : IApiService
         };
     }
 
+
     public async Task<T> GetAsync<T>(string baseUrl, string endpoint)
     {
         var url = $"{baseUrl}/{endpoint}";
-        //httpClient.DefaultRequestHeaders.Remove("Authorization");
-        //httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+        //HttpClient.DefaultRequestHeaders.Remove("Authorization");
+        //HttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
 
-        var response = await httpClient.GetAsync(url);
+        var response = await HttpClient.GetAsync(url);
         return await HandleResponse<T>(response);
     }
 
     public async Task<T> PostAsync<T>(string baseUrl, string endpoint, object data)
     {
         var url = $"{baseUrl}/{endpoint}";
-        //httpClient.DefaultRequestHeaders.Remove("Authorization");
-        //httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+        //HttpClient.DefaultRequestHeaders.Remove("Authorization");
+        //HttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
 
-        var jsonData = JsonSerializer.Serialize(data, jsonOptions);
+        var jsonData = JsonConvert.SerializeObject(data);
         var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-        var response = await httpClient.PostAsync(url, content);
+        var response = await HttpClient.PostAsync(url, content);
         return await HandleResponse<T>(response);
     }
 
@@ -53,7 +55,7 @@ public class ApiService : IApiService
         var json = await response.Content.ReadAsStringAsync();
         if (response.IsSuccessStatusCode)
         {
-            return JsonSerializer.Deserialize<T>(json, jsonOptions)!;
+            return JsonConvert.DeserializeObject<T>(json)!;
         }
         else
         {

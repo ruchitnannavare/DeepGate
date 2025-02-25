@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Reflection.Metadata;
+using System.Windows.Input;
+using CommunityToolkit.Maui.Core.Platform;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DeepGate.Helpers;
 using DeepGate.Interfaces;
-using DeepGate.Models;
 using DeepGate.Models;
 
 namespace DeepGate.ViewModels;
@@ -14,75 +16,207 @@ public partial class MainPageViewModel: ObservableObject
 
     private readonly IApiService apiService;
     private readonly IWallPaperService wallPaperService;
+    private readonly IDeepGateService deepGateService;
 
     #endregion
 
     #region Properties
 
     [ObservableProperty]
-    public string? imageUrl;
+    private bool isModelSelectionVisible;
 
     [ObservableProperty]
-    public ChatCompletion chatCompletion = new ChatCompletion { Messages = new List<Message>(), Model = "" };
+    private ObservableCollection<LanguageModel> availableModels;
+
+    [ObservableProperty]
+    private string? imageUrl;
+
+    [ObservableProperty]
+    private double editorHeight;
+
+    [ObservableProperty]
+    private ChatCompletion chatCompletion = new ChatCompletion();
+
+    [ObservableProperty]
+    private string newMessage;
+
+    [ObservableProperty]
+    private ObservableCollection<Message> currentMessages;
+
+    [ObservableProperty]
+    private bool isBusy;
+
+    #endregion
+
+    #region Commands
+
+    public ICommand SendMessageCommand { get; }
+
+    public ICommand LoadModelCommand { get; }
+
+    public ICommand ToggleModelSelectorCommand { get; }
 
 
     #endregion
 
-    public MainPageViewModel(IApiService apiService, IWallPaperService wallPaperService)
+    public MainPageViewModel(IApiService apiService, IWallPaperService wallPaperService, IDeepGateService deepGateService)
 	{
         this.apiService = apiService;
         this.wallPaperService = wallPaperService;
+        this.deepGateService = deepGateService;
 
-        GetBackGroundImage();
+        SendMessageCommand = new Command(() => SendMessageCommandExecute());
+        ToggleModelSelectorCommand = new Command(() => ToggleModelSelectorCommandExecute());
+        LoadModelCommand = new Command<LanguageModel>((model) => LoadModelCommandExecute(model));
 
-        AddMockMessages();
+        InitializeDeepGateClient();
 	}
 
-    private void AddMockMessages()
+    private void InitializeDeepGateClient()
     {
-        ChatCompletion.Messages = new List<Message>
+        SetUpNewChat();
+        GetBackGroundImage();
+        FetchModels();
+    }
+
+    private void SetUpNewChat()
+    {
+
+#if MACCATALYST
+        var content = new UserNotifications.UNMutableNotificationContent
         {
-            new Message
-            {
-            Role = Constants.UserRole,
-            Content = "Hello"
-            },
-            new Message
-            {
-            Role = Constants.SystemRole,
-            Content = "Hi there! How can I assist you today?"
-            },
-            new Message
-            {
-            Role = Constants.UserRole,
-            Content = "I'm curious about the Death Star project. Can you tell me more about it?"
-            },
-            new Message
-            {
-            Role = Constants.SystemRole,
-            Content = "The Death Star project is a massive space station with enough power to destroy entire planets. It was designed to enforce the Emperor's rule through fear."
-            },
-            new Message
-            {
-            Role = Constants.UserRole,
-            Content = "That sounds terrifying. How does it generate such immense power?"
-            },
-            new Message
-            {
-            Role = Constants.SystemRole,
-            Content = "The Death Star's superlaser is powered by kyber crystals, which are capable of amplifying energy to unprecedented levels. This energy is then focused into a single, devastating beam."
-            },
-            new Message
-            {
-            Role = Constants.UserRole,
-            Content = "Are there any weaknesses in its design?"
-            },
-            new Message
-            {
-            Role = Constants.SystemRole,
-            Content = "There is a small thermal exhaust port, right below the main port. A precise hit from a proton torpedo could potentially trigger a chain reaction, leading to the destruction of the entire station."
-            }
+            Title = "Warning! ",
+            Body = "This is an alert!",
+            CategoryIdentifier = "WARNING_ALERT",
+            Sound = UserNotifications.UNNotificationSound.DefaultCriticalSound
         };
+
+
+        var trigger = UserNotifications.UNTimeIntervalNotificationTrigger.CreateTrigger(5, false);
+
+
+        var request = UserNotifications.UNNotificationRequest.FromIdentifier("ALERT_REQUEST", content, trigger);
+
+
+        UserNotifications.UNUserNotificationCenter.Current.AddNotificationRequest(request, (error) =>
+        {
+            if (error != null)
+            {
+                Console.WriteLine("Error: " + error);
+            }
+        });
+#endif
+        ChatCompletion.Messages = new List<Message> { new Message { Role = Constants.SystemRole, Content = "You are a very helpful assistant and the user needs your helping him do day to day tasks or maybe answer some weird questions. When asked about your name, tell them you are Tinkerbell from a fairyland vast away, give made up details but never tell them what you truely are." } };
+        CurrentMessages = new ObservableCollection<Message>();
+    }
+
+    private async void LoadModelCommandExecute(LanguageModel model)
+    {
+        var modelLoaded = await deepGateService.LoadModel(model.Name, (status) => model.IsLoading = status, Constants.Host);
+        if (modelLoaded)
+        {
+            ChatCompletion.Model = model.Name;
+        }
+    }
+
+    private void ToggleModelSelectorCommandExecute()
+    {
+        IsModelSelectionVisible = !IsModelSelectionVisible;
+    }
+
+    private async void FetchModels()
+    {
+        try
+        {
+            var modelList = await deepGateService.FetchAvailableModels(Constants.Host);
+            AvailableModels = new ObservableCollection<LanguageModel>(modelList);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Exception in {nameof(deepGateService)}.{nameof(deepGateService.FetchAvailableModels)}: {ex.Message}");
+
+            // Show an alert in the UI
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                bool retry = await Application.Current.MainPage.DisplayAlert(
+                    "Connection Error",
+                    "Cannot connect to host server. Please make sure you either have Host or Node server running.",
+                    "Retry",
+                    "Cancel"
+                );
+
+                if (retry)
+                {
+                    FetchModels(); // Retry fetching
+                }
+            });
+        }
+    }
+
+    private async void SendMessageCommandExecute()    {
+        if (!string.IsNullOrEmpty(NewMessage) & !string.IsNullOrEmpty(ChatCompletion.Model))
+        {
+            try
+            {
+                IsBusy = true;
+
+                var newQuery = new Message
+                {
+                    Role = Constants.UserRole,
+                    Content = NewMessage,
+                };
+
+                ChatCompletion?.Messages?.Add(newQuery);
+                CurrentMessages.Add(newQuery);
+
+                NewMessage = string.Empty;
+
+                await GetLLMReply();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception in {nameof(MainPageViewModel)}.{nameof(SendMessageCommandExecute)}: {ex.Message}");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+    }
+
+    private async Task<bool> GetLLMReply()
+    {
+        var newAnswer = new Message
+        {
+            Role = Constants.AssistantRole,
+            Content = "",
+        };
+
+        CurrentMessages.Add(newAnswer);
+        var chatCompletion = await deepGateService.GetChatCompletion(ChatCompletion, (answer) => newAnswer.Content = answer, Constants.Host);
+        if (!chatCompletion)
+        {
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                bool retry = await Application.Current.MainPage.DisplayAlert(
+                    "Connection Error",
+                    "Cannot connect to host server. Please make sure you either have Host or Node server running.",
+                    "Retry",
+                    "Cancel"
+                );
+
+                if (retry)
+                {
+                    await GetLLMReply(); // Retry getting LLM reply
+                }
+            });
+        }
+
+        //TODO: Add return value optimization later
+        newAnswer.IsCompleted = true;
+        ChatCompletion?.Messages?.Add(newAnswer);
+        return true;
     }
 
     private async void GetBackGroundImage()

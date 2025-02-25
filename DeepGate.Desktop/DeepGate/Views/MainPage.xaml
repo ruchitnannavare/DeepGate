@@ -8,7 +8,10 @@
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:icons="http://www.aathifmahir.com/dotnet/2022/maui/icons"
              x:Class="DeepGate.Views.MainPage"
-             Background="Black">
+             Background="Black"
+             ModelSelectorVisibility="{Binding IsModelSelectionVisible}"
+             x:Name="main">
+
     <ContentPage.Resources>
         <ResourceDictionary>
 
@@ -34,12 +37,14 @@
 
     <!--Background grid-->
     <Grid>
+        <!--Background Image-->
         <Image
             Aspect="AspectFill"
             Source="{Binding ImageUrl}"/>
 
+        <!--Wallpaper Tint-->
         <Border
-            BackgroundColor="#40000000"
+            BackgroundColor="#60000000"
             StrokeThickness="0"/>
 
         <!--Container Grid-->
@@ -53,20 +58,33 @@
                 CornerRadius="30"
                 EffectStyle="Dark">
 
-
             </acrylic:AcrylicView>
 
-            <!--Mane Panel-->
             <Grid
-                Grid.Column="1"
-                RowDefinitions="Auto, *, Auto">
+                RowDefinitions="Auto, *, Auto"
+                Grid.Column="1">
+                <Border
+                    Margin="0,0,0,10"
+                    BackgroundColor="#40FFFFFF"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 15"
+                    Padding="10"
+                    HorizontalOptions="Start">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ToggleModelSelectorCommand}"/>
+                    </Border.GestureRecognizers>
+                    <Label
+                        Text="deepseek-r1:1.5b"/>
+                </Border>
+
 
                 <!--Message Collection\ ItemsSource="{Binding ChatCompletion.Messages}"-->
                 <sfList:SfListView
                     HorizontalOptions="Fill"
                     Grid.Row="1"
+                    SelectionMode="None"
                     AutoFitMode="DynamicHeight"
-                    ItemsSource="{Binding ChatCompletion.Messages}"
+                    ItemsSource="{Binding CurrentMessages}"
                     ItemTemplate="{StaticResource MessageDataTemplateSelector}">
 
                     <!--Chat Initialization View-->
@@ -85,7 +103,6 @@
                                     Aspect="AspectFit"
                                     Source="orca.png"/>
                             </Border>
-
                         </Grid>
                     </sfList:SfListView.EmptyView>
                 </sfList:SfListView>
@@ -93,6 +110,7 @@
                 <!--Input Control-->
                 <acrylic:AcrylicView
                     MaximumHeightRequest="400"
+                    MinimumHeightRequest="100"
                     VerticalOptions="EndAndExpand"
                     Grid.Row="2"
                     CornerRadius="30"
@@ -103,18 +121,113 @@
 
                         <!--Message Editor -->
                         <Editor
-                            AutoSize="Disabled"
-                            Placeholder="message deepseek-r1"/>
+                            Text="{Binding NewMessage}"
+                            AutoSize="TextChanges"
+                            VerticalOptions="FillAndExpand"
+                            Placeholder="Message Deepseek-r1"/>
 
                         <Label
                             HorizontalOptions="End"
                             Grid.Row="1"
                             FontSize="40"
-                            icons:MauiIcon.Value="{icons:Cupertino Icon=ArrowupCircleFill}"/>
+                            icons:MauiIcon.Value="{icons:Cupertino Icon=ArrowupCircleFill}">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SendMessageCommand}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
                     </Grid>
+                </acrylic:AcrylicView>
+
+                
+                <!--Model selection window-->
+                <acrylic:AcrylicView
+                    x:Name="modelSelector"
+                    Opacity="0" 
+                    EffectStyle="Dark"
+                    Grid.Row="1"
+                    CornerRadius="20"
+                    Padding="15, 10, 5, 10"
+                    WidthRequest="300"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Start">
+                    <sfList:SfListView
+                        SelectionBackground="Transparent"
+                        SelectionMode="Single"
+                        ItemsSource="{Binding AvailableModels}">
+
+                        <sfList:SfListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid
+                                    ColumnSpacing="10"
+                                    Margin="0, 0, 10, 0"
+                                    RowSpacing="3"
+                                    RowDefinitions="Auto, Auto"
+                                    ColumnDefinitions="Auto, *, Auto, Auto">
+
+                                    <ActivityIndicator
+                                        Grid.RowSpan="2"
+                                        Grid.Column="2"
+                                        IsRunning="{Binding IsLoading}"/>
+                                    <!--Model Name-->
+                                    <Label
+                                        Grid.ColumnSpan="3"
+                                        VerticalOptions="Center"
+                                        Text="{Binding Model}"/>
+
+                                    <!--Parameter Size-->
+                                    <Label
+                                        FontSize="Medium"
+                                        TextColor="LightGray"
+                                        Grid.Row="1"
+                                        VerticalOptions="Center">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span
+                                                    FontSize="Medium"
+                                                    TextColor="LightGray"
+                                                    Text="Size "/>
+                                                <Span
+                                                    FontSize="Medium"
+                                                    Text="{Binding Details.ParameterSize}"/>
+                                            </FormattedString>
+
+                                        </Label.FormattedText>
+                                    </Label>
+
+                                    <!-- Family-->
+                                    <Label
+                                        FontSize="Medium"
+                                        TextColor="LightGray"
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        VerticalOptions="Center">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span
+                                                    FontSize="Medium"
+                                                    TextColor="LightGray"
+                                                    Text="Family "/>
+                                                <Span
+                                                    FontSize="Medium"
+                                                    Text="{Binding Details.Family}"/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+
+                                    <!--Load Model button-->
+                                    <Button
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainPageViewModel}}, Path=LoadModelCommand}"
+                                        CommandParameter="{Binding .}"
+                                        VerticalOptions="Center"
+                                        Grid.Column="3"
+                                        Grid.RowSpan="2"
+                                        Text="Load"/>
+                                </Grid>
+                            </DataTemplate>
+                        </sfList:SfListView.ItemTemplate>
+                    </sfList:SfListView>
                 </acrylic:AcrylicView>
             </Grid>
         </Grid>
     </Grid>
-
 </ContentPage>

@@ -26,9 +26,9 @@ func NewRouteHandler(logger *log.Logger, ollamaClient *clients.OllamaClient) *Ro
 
 // RegisterRoutes registers all host-related routes
 func (r *RouteHandler) RegisterRoutes(router *gin.Engine) {
-	router.POST("/load-model", r.handleLoadModel)
-	router.GET("/fetchlocalmodellist", r.handleFetchLocalModelList)
-	router.POST("/chat", r.handleChatCompletion)
+	router.POST("/host/load-model", r.handleLoadModel)
+	router.GET("/host/fetch-models", r.handleFetchLocalModelList)
+	router.POST("/host/chat", r.handleChatCompletion)
 }
 
 func (r *RouteHandler) handleLoadModel(c *gin.Context) {

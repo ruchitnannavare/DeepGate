@@ -5,7 +5,7 @@ namespace DeepGate.Models;
 /// <summary>
 /// Represents a chat completion model.
 /// </summary>
-public partial class ChatCompletion: ObservableObject
+public partial class ChatCompletion: Master
 {
 	/// <summary>
 	/// Gets or sets the model identifier.

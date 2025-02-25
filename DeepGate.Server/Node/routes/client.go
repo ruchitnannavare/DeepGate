@@ -37,38 +37,10 @@ func NewClientHandler(logger *log.Logger, redis *clients.RedisClient) *ClientHan
 
 // RegisterRoutes registers all client-related routes
 func (c *ClientHandler) RegisterRoutes(router *gin.Engine) {
-	// @Summary Fetch available models
-	// @Description Retrieves a list of all available AI models from Redis
-	// @Tags Client
-	// @Produce json
-	// @Success 200 {object} map[string]interface{}
-	// @Failure 500 {object} map[string]interface{}
-	// @Router /client/fetch-models [get]
-	router.GET("/client/fetch-models", c.handleFetchModels)
 
-	// @Summary Load a model
-	// @Description Loads an AI model on an available host server
-	// @Tags Client
-	// @Accept json
-	// @Produce json
-	// @Param request body struct{Model string} true "Model to load"
-	// @Success 200 {object} map[string]interface{}
-	// @Failure 400 {object} map[string]interface{}
-	// @Failure 500 {object} map[string]interface{}
-	// @Router /client/load-model [post]
-	router.POST("/client/load-model", c.handleClientLoadModel)
-
-	// @Summary Chat with AI model
-	// @Description Sends a chat request to an AI model hosted on the best available server
-	// @Tags Client
-	// @Accept json
-	// @Produce json
-	// @Param request body databinding.ChatCompletion true "Chat request payload"
-	// @Success 200 {object} string "Streaming response"
-	// @Failure 400 {object} map[string]interface{}
-	// @Failure 500 {object} map[string]interface{}
-	// @Router /client/chat [post]
-	router.POST("/client/chat", c.handleClientChat)
+	router.POST("/node/load-model", c.handleClientLoadModel)
+	router.GET("/node/fetch-models", c.handleFetchModels)
+	router.POST("/node/chat", c.handleClientChat)
 }
 
 // handleFetchModels fetches available models from Redis
@@ -110,7 +82,7 @@ func (c *ClientHandler) handleClientLoadModel(gc *gin.Context) {
 	// Call the Host server to load model
 	apiClient := clients.MakeTemporaryAPIClient(inactiveHost.HostInfo.IPAddress, inactiveHost.HostInfo.HostPort)
 
-	resp, err := apiClient.MakeRequest("POST", "/load-model", request, nil)
+	resp, err := apiClient.MakeRequest("POST", "/host/load-model", request, nil)
 	if err != nil {
 		c.logger.Printf("Failed to load model: %v", err)
 		gc.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to load model"})
@@ -162,7 +134,7 @@ func (c *ClientHandler) handleClientChat(gc *gin.Context) {
 	apiClient := clients.MakeTemporaryAPIClient(bestHost.HostInfo.IPAddress, bestHost.HostInfo.HostPort)
 
 	// Open a streaming connection to the Host's /chat API
-	hostResp, err := apiClient.MakeStreamRequest("POST", "/chat", nil, chatRequest)
+	hostResp, err := apiClient.MakeStreamRequest("POST", "/host/chat", nil, chatRequest)
 	if err != nil {
 		c.logger.Printf("Chat request failed: %v", err)
 		gc.JSON(http.StatusInternalServerError, gin.H{"error": "Chat request failed"})

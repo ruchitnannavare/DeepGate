@@ -2,26 +2,94 @@
 <ContentView 
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:acrylic="clr-namespace:Xe.AcrylicView;assembly=Xe.AcrylicView"
+    xmlns:converters="clr-namespace:DeepGate.Converters"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Margin="5, 10"
     x:Class="DeepGate.Views.ReceivedMessageItemTemplate">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <converters:StringIsEmptyConverter x:Key="StringIsEmptyConverter"/>
+        </ResourceDictionary>
+    </ContentView.Resources>
     <ContentView.Content>
         <Grid
-            ColumnDefinitions="0.9*, 0.2*">
+            ColumnSpacing="10"
+            Margin="0, 5"
+            ColumnDefinitions="Auto, *, 0.1*">
+
+            <!--Orca icon-->
             <Border
-                StrokeShape="RoundRectangle 30"
-                Padding="15, 10"
+                VerticalOptions="Start"
                 StrokeThickness="0"
-                BackgroundColor="#70000000"
-                HorizontalOptions="Start"
-                HeightRequest="50">
-                <Editor
-                    HorizontalOptions="FillAndExpand"
-                    IsReadOnly="True"
-                    Text="{Binding Content}"/>
+                StrokeShape="RoundRectangle 48"
+                Padding="-11"
+                Margin="0, 10"
+                WidthRequest="30"
+                HeightRequest="30">
+
+                <Border.Background>
+                    <LinearGradientBrush
+                        StartPoint="1, 1"
+                        EndPoint="0, 0">
+                        <GradientStop Offset="0" Color="CornflowerBlue"/>
+                        <GradientStop Offset="0.6" Color="#60FFFFFF"/>
+                        <GradientStop Offset="1" Color="#60FFFFFF"/>
+                    </LinearGradientBrush>
+
+                </Border.Background>
+
+                <Image
+                    Margin="0"
+                    Aspect="AspectFit"
+                    Source="orca.png"/>
             </Border>
 
+            <!--Thinking Control-->
+            <acrylic:AcrylicView
+                Grid.Column="1"
+                TintColor="Black"
+                IsVisible="False"
+                TintOpacity="0.4"
+                CornerRadius="20"
+                HorizontalOptions="Start">
+                <acrylic:AcrylicView.Triggers>
+                    <DataTrigger
+                        TargetType="acrylic:AcrylicView"
+                        Value="False"
+                        Binding="{Binding Content, Converter={StaticResource StringIsEmptyConverter}}">
+                        <Setter Property="IsVisible" Value="True"/>
+                    </DataTrigger>
 
+                </acrylic:AcrylicView.Triggers>
+                <Grid
+                    ColumnDefinitions="Auto, Auto"
+                    ColumnSpacing="10"
+                    Margin="15">
+                    <Label
+                        Text="Thinking"
+                        TextColor="Gray"/>
+                    <ActivityIndicator
+                        Grid.Column="1"
+                        Color="White"
+                        IsRunning="True"/>
+                </Grid>
+
+            </acrylic:AcrylicView>
+            <acrylic:AcrylicView
+                Grid.Column="1"
+                IsVisible="{Binding Content, Converter={StaticResource StringIsEmptyConverter}}"
+                TintColor="Black"
+                TintOpacity="0.4"
+                CornerRadius="20"
+                HorizontalOptions="Start">
+                    <!--LLM Response-->
+                    <Label
+                        Margin="15"
+                        VerticalOptions="CenterAndExpand"
+                        HorizontalOptions="FillAndExpand"
+                        Text="{Binding Content}">
+                    </Label>
+            </acrylic:AcrylicView>
         </Grid>
     </ContentView.Content>
 </ContentView>

@@ -63,6 +63,17 @@ public static class MauiProgram
             }
 #endif
         });
+
+        EntryHandler.Mapper.AppendToMapping("Borderless", (handler, view) =>
+        {
+#if MACCATALYST
+            if (handler.PlatformView is UITextField textField)
+            {
+                textField.BorderStyle = UITextBorderStyle.None;
+                textField.BackgroundColor = UIColor.Clear;
+            }
+#endif
+        });
     }
 
     private static MauiAppBuilder ConfigureServices(this MauiAppBuilder builder)
@@ -75,8 +86,9 @@ public static class MauiProgram
 
         // Services
         builder.Services.AddSingleton<HttpClient>();
-        builder.Services.AddTransient<IApiService, ApiService>();
-        builder.Services.AddTransient<IWallPaperService, WallPaperService>();
+        builder.Services.AddSingleton<IApiService, ApiService>();
+        builder.Services.AddSingleton<IDeepGateService, DeepGateService>();
+        builder.Services.AddSingleton<IWallPaperService, WallPaperService>();
 
         return builder;
     }

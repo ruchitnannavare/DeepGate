@@ -38,6 +38,8 @@ func (c *APIClient) MakeRequest(method, endpoint string, body interface{}, heade
 	var reqBody io.Reader
 	if body != nil {
 		jsonBody, err := json.Marshal(body)
+		var ok = string(jsonBody)
+		fmt.Println(ok)
 		if err != nil {
 			return nil, err
 		}
@@ -80,12 +82,16 @@ func (c *APIClient) MakeRequest(method, endpoint string, body interface{}, heade
 
 func (c *APIClient) MakeStreamingRequest(method, endpoint string, body io.Reader) (*http.Response, error) {
 	url := c.BaseURL + endpoint
+	c.HTTPClient = &http.Client{
+		Timeout: 0, // No timeout for streaming
+	}
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
 		return nil, err
 	}
 
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Cache-Control", "no-cache")
+	req.Header.Set("Connection", "keep-alive")
 
 	return c.HTTPClient.Do(req)
 }

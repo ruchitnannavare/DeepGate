@@ -7,18 +7,21 @@
     HorizontalOptions="FillAndExpand"
     x:Class="DeepGate.Views.UserTextMessageItemTemplate">
     <ContentView.Content>
-        <Border
-            StrokeThickness="0"
-            BackgroundColor="#30FFFFFF"
-            StrokeShape="RoundRectangle 30"
-            Padding="15, 5"
-            HorizontalOptions="End">
-            <Label
-                LineBreakMode="WordWrap"
-                VerticalOptions="CenterAndExpand"
-                HorizontalTextAlignment="Start"
-                Text="{Binding Content}"/>
+        <Grid
+            Margin="0, 5, 15, 5"
+            ColumnDefinitions="0.3*, 0.7*">
+            <acrylic:AcrylicView
+                Grid.Column="1"
+                CornerRadius="20"
+                HorizontalOptions="End">
+                <Label
+                    Margin="15"
+                    LineBreakMode="WordWrap"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalTextAlignment="Start"
+                    Text="{Binding Content}"/>
 
-        </Border>
+            </acrylic:AcrylicView>
+        </Grid>
     </ContentView.Content>
 </ContentView>
