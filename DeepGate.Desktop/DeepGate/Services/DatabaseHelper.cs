@@ -1,31 +1,35 @@
-﻿using SQLite;
+﻿using LiteDB;
 using System.IO;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using DeepGate.Interfaces;
 using DeepGate.Models;
+using Microsoft.Maui.Storage; // For cross-platform file path
 
 public class DatabaseHelper : IDataBaseHelper
 {
-    private readonly SQLiteAsyncConnection database;
+    private readonly LiteDatabase database;
+    private readonly ILiteCollection<Master> masterCollection;
 
-    public DatabaseHelper(string dbPath)
+    public DatabaseHelper()
     {
-        database = new SQLiteAsyncConnection(dbPath);
+        var dbPath = Path.Combine(FileSystem.AppDataDirectory, "deepgate_lite_test_9.db");
+
+        BsonMapper.Global.Entity<Message>();
+        BsonMapper.Global.Entity<ChatCompletion>();
+
+        database = new LiteDatabase(dbPath);
+        masterCollection = database.GetCollection<Master>("masters");
     }
 
-    public async Task Init()
+    public Task<int> AddOrUpdateMasterInstance(Master master)
     {
-        await database.CreateTableAsync<Master>();
+        masterCollection.Upsert(master);
+        return Task.FromResult(1); // Upsert doesn't return row count, assuming success
     }
 
-    public async Task<int> AddMasterInstance(Master master)
+    public Task<List<Master>> GetAllInstances()
     {
-        return await database.InsertAsync(master);
-    }
-
-    public async Task<List<Master>> AddMasterInstance()
-    {
-        return await database.Table<Master>().ToListAsync();
+        var result = masterCollection.FindAll().ToList();
+        return Task.FromResult(result);
     }
 }

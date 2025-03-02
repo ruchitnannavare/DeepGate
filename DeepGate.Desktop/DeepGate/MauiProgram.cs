@@ -17,6 +17,7 @@ using MauiIcons.Fluent;
 using Microsoft.Maui.Handlers;
 using DeepGate.Views;
 using Syncfusion.Maui.Core.Hosting;
+using LiteDB;
 
 namespace DeepGate;
 
@@ -86,6 +87,7 @@ public static class MauiProgram
 
         // Services
         builder.Services.AddSingleton<HttpClient>();
+        builder.Services.AddSingleton(BsonMapper.Global);
         builder.Services.AddSingleton<IApiService, ApiService>();
         builder.Services.AddSingleton<IDeepGateService, DeepGateService>();
         builder.Services.AddSingleton<IWallPaperService, WallPaperService>();

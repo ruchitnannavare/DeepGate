@@ -50,6 +50,7 @@
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/CommunityToolkit.Maui.Core.dll
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/CommunityToolkit.Mvvm.dll
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/CoreBTS.Maui.ShieldMVVM.dll
+/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/LiteDB.dll
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/Microsoft.Extensions.Configuration.dll
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/Microsoft.Extensions.Configuration.Abstractions.dll
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/Microsoft.Extensions.DependencyInjection.dll

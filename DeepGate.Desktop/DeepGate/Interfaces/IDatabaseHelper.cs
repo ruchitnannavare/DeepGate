@@ -6,7 +6,6 @@ namespace DeepGate.Interfaces;
 
 public interface IDataBaseHelper
 {
-    Task Init();
-    Task<int> AddMasterInstance(Master masterModel);
-    Task<List<Master>> AddMasterInstance();
+    Task<int> AddOrUpdateMasterInstance(Master masterModel);
+    Task<List<Master>> GetAllInstances();
 }

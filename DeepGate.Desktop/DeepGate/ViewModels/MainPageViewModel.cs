@@ -17,10 +17,13 @@ public partial class MainPageViewModel: ObservableObject
     private readonly IApiService apiService;
     private readonly IWallPaperService wallPaperService;
     private readonly IDeepGateService deepGateService;
+    private readonly IDataBaseHelper dataBaseHelper;
 
     #endregion
 
     #region Properties
+
+    private Master currentMasterModel;
 
     [ObservableProperty]
     private bool isModelSelectionVisible;
@@ -35,13 +38,16 @@ public partial class MainPageViewModel: ObservableObject
     private double editorHeight;
 
     [ObservableProperty]
-    private ChatCompletion chatCompletion = new ChatCompletion();
+    private ChatCompletion chatCompletion;
 
     [ObservableProperty]
     private string newMessage;
 
     [ObservableProperty]
     private ObservableCollection<Message> currentMessages;
+
+    [ObservableProperty]
+    ObservableCollection<Master> history;
 
     [ObservableProperty]
     private bool isBusy;
@@ -59,11 +65,16 @@ public partial class MainPageViewModel: ObservableObject
 
     #endregion
 
-    public MainPageViewModel(IApiService apiService, IWallPaperService wallPaperService, IDeepGateService deepGateService)
+    public MainPageViewModel(
+        IApiService apiService,
+        IWallPaperService wallPaperService,
+        IDeepGateService deepGateService,
+        IDataBaseHelper dataBaseHelper)
 	{
         this.apiService = apiService;
         this.wallPaperService = wallPaperService;
         this.deepGateService = deepGateService;
+        this.dataBaseHelper = dataBaseHelper;
 
         SendMessageCommand = new Command(() => SendMessageCommandExecute());
         ToggleModelSelectorCommand = new Command(() => ToggleModelSelectorCommandExecute());
@@ -74,55 +85,36 @@ public partial class MainPageViewModel: ObservableObject
 
     private void InitializeDeepGateClient()
     {
+        FetchMasterCollection();
         SetUpNewChat();
         GetBackGroundImage();
         FetchModels();
     }
 
+    private async void FetchMasterCollection()
+    {
+        try
+        {
+            var allInstances = await dataBaseHelper.GetAllInstances();
+            History = new ObservableCollection<Master>(allInstances);
+            Console.WriteLine(allInstances.ToString());
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+
     private void SetUpNewChat()
     {
-
-#if MACCATALYST
-        var content = new UserNotifications.UNMutableNotificationContent
-        {
-            Title = "Warning! ",
-            Body = "This is an alert!",
-            CategoryIdentifier = "WARNING_ALERT",
-            Sound = UserNotifications.UNNotificationSound.DefaultCriticalSound
-        };
-
-
-        var trigger = UserNotifications.UNTimeIntervalNotificationTrigger.CreateTrigger(5, false);
-
-
-        var request = UserNotifications.UNNotificationRequest.FromIdentifier("ALERT_REQUEST", content, trigger);
-
-
-        UserNotifications.UNUserNotificationCenter.Current.AddNotificationRequest(request, (error) =>
-        {
-            if (error != null)
-            {
-                Console.WriteLine("Error: " + error);
-            }
-        });
-#endif
+        ChatCompletion = new ChatCompletion();
         ChatCompletion.Messages = new List<Message> { new Message { Role = Constants.SystemRole, Content = "You are a very helpful assistant and the user needs your helping him do day to day tasks or maybe answer some weird questions. When asked about your name, tell them you are Tinkerbell from a fairyland vast away, give made up details but never tell them what you truely are." } };
         CurrentMessages = new ObservableCollection<Message>();
     }
 
-    private async void LoadModelCommandExecute(LanguageModel model)
-    {
-        var modelLoaded = await deepGateService.LoadModel(model.Name, (status) => model.IsLoading = status, Constants.Host);
-        if (modelLoaded)
-        {
-            ChatCompletion.Model = model.Name;
-        }
-    }
+    #region Methods
 
-    private void ToggleModelSelectorCommandExecute()
-    {
-        IsModelSelectionVisible = !IsModelSelectionVisible;
-    }
+    #region API Methods
 
     private async void FetchModels()
     {
@@ -150,38 +142,6 @@ public partial class MainPageViewModel: ObservableObject
                     FetchModels(); // Retry fetching
                 }
             });
-        }
-    }
-
-    private async void SendMessageCommandExecute()    {
-        if (!string.IsNullOrEmpty(NewMessage) & !string.IsNullOrEmpty(ChatCompletion.Model))
-        {
-            try
-            {
-                IsBusy = true;
-
-                var newQuery = new Message
-                {
-                    Role = Constants.UserRole,
-                    Content = NewMessage,
-                };
-
-                ChatCompletion?.Messages?.Add(newQuery);
-                CurrentMessages.Add(newQuery);
-
-                NewMessage = string.Empty;
-
-                await GetLLMReply();
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception in {nameof(MainPageViewModel)}.{nameof(SendMessageCommandExecute)}: {ex.Message}");
-            }
-            finally
-            {
-                IsBusy = false;
-            }
         }
     }
 
@@ -213,6 +173,8 @@ public partial class MainPageViewModel: ObservableObject
             });
         }
 
+
+
         //TODO: Add return value optimization later
         newAnswer.IsCompleted = true;
         ChatCompletion?.Messages?.Add(newAnswer);
@@ -225,4 +187,85 @@ public partial class MainPageViewModel: ObservableObject
         // Mountains 4gogwd
         ImageUrl = await wallPaperService.GetImageURLForId("4gogwd");
     }
+
+    #endregion
+
+    #region Command Execution
+
+    private async void LoadModelCommandExecute(LanguageModel model)
+    {
+        var modelLoaded = await deepGateService.LoadModel(model.Name, (status) => model.IsLoading = status, Constants.Host);
+        if (modelLoaded)
+        {
+            ChatCompletion.Model = model.Name;
+        }
+    }
+
+    private void ToggleModelSelectorCommandExecute()
+    {
+        IsModelSelectionVisible = !IsModelSelectionVisible;
+    }
+
+    private async void SendMessageCommandExecute()    {
+        if (!string.IsNullOrEmpty(NewMessage) & !string.IsNullOrEmpty(ChatCompletion.Model))
+        {
+            try
+            {
+                IsBusy = true;
+
+                var newQuery = new Message
+                {
+                    Role = Constants.UserRole,
+                    Content = NewMessage,
+                };
+
+                ChatCompletion?.Messages?.Add(newQuery);
+                CurrentMessages.Add(newQuery);
+
+                NewMessage = string.Empty;
+
+                var responseResult = await GetLLMReply();
+                if (responseResult)
+                {
+                    if (CurrentMessages.Count == 2)
+                    {
+                        GenerateCurrentMaster();
+                        History.Add(currentMasterModel);
+                    }
+                    currentMasterModel.ChatCompletion = this.ChatCompletion;
+                    await dataBaseHelper.AddOrUpdateMasterInstance(currentMasterModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception in {nameof(MainPageViewModel)}.{nameof(SendMessageCommandExecute)}: {ex.Message}");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+    }
+
+    private void GenerateCurrentMaster()
+    {
+        currentMasterModel = new Master
+        {
+            DateTime = DateTime.Now,
+            Type = ChildType.CHATS,
+            ChatCompletion = this.ChatCompletion,
+        };
+    }
+
+    #endregion
+
+    #region Support
+
+    //private Task SaveMasterModelInstance()
+    //{
+    //}
+
+    #endregion
+
+    #endregion
 }
