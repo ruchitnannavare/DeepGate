@@ -46,11 +46,11 @@ func ParseModelResponse(data []byte) (*HostModelInfoResponse, error) {
 
 // Base unit of deepgate-service-cluster
 type LLMHost struct {
-	IPAdd     string                  `json:"ip_add"`
+	HostName  string                  `json:"host_name"`
 	HostInfo  databinding.InfoPackage `json:"host_info"`
 	ModelInfo []HostModelInfo         `json:"model_info"`
 	Status    bool                    `json:"status"`
-	TaskCount int                     `json:"task_count"`
+	Tasks     []string                `json:"tasks"`
 }
 
 type LLModel struct {
@@ -59,8 +59,8 @@ type LLModel struct {
 }
 
 type HostingServer struct {
-	IPAdd  string
-	Status bool
+	HostName string
+	Status   bool
 }
 
 // HostModelInfo represents simplified model information with status

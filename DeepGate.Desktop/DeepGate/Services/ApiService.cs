@@ -29,12 +29,20 @@ public class ApiService : IApiService
 
     public async Task<T> GetAsync<T>(string baseUrl, string endpoint)
     {
-        var url = $"{baseUrl}/{endpoint}";
-        //HttpClient.DefaultRequestHeaders.Remove("Authorization");
-        //HttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+        try
+        {
+            var url = $"{baseUrl}/{endpoint}";
+            //HttpClient.DefaultRequestHeaders.Remove("Authorization");
+            //HttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
 
-        var response = await HttpClient.GetAsync(url);
-        return await HandleResponse<T>(response);
+            var response = await HttpClient.GetAsync(url);
+            return await HandleResponse<T>(response);
+
+        }
+        catch (Exception ex)
+        {
+            return await HandleResponse<T>(new HttpResponseMessage());
+        }
     }
 
     public async Task<T> PostAsync<T>(string baseUrl, string endpoint, object data)

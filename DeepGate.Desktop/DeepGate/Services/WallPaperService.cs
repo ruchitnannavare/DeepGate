@@ -19,13 +19,13 @@ public class WallPaperService: IWallPaperService
 		this.apiService = apiService;
 	}
 
-	public async Task<string> GetImageURLForId(string wallhavenImageId)
+	public async Task<WallhavenResponse> GetImageURLForId(string wallhavenImageId)
 	{
 		// test ID 73rd9v
 		try
 		{
 			var response = await apiService.GetAsync<WallhavenResponse>(Constants.WallhavenBaseURL, wallhavenImageId);
-			return response.Data.Path;
+			return response;
 		}
 		catch (Exception ex)
 		{

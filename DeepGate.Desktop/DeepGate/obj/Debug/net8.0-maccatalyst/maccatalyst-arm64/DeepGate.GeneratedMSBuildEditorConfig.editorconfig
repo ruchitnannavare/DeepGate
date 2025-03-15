@@ -15,8 +15,6 @@ build_property.RootNamespace = DeepGate
 build_property.ProjectDir = /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
-build_property.EffectiveAnalysisLevelStyle = 8.0
-build_property.EnableCodeStyleSeverity = 
 
 [/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/App.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
@@ -35,6 +33,18 @@ build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = DeepGate.Resources.Styles.Styles.xaml
 build_metadata.AdditionalFiles.TargetPath = Resources/Styles/Styles.xaml
 build_metadata.AdditionalFiles.RelativePath = Resources/Styles/Styles.xaml
+
+[/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/Views/Controls/AddStringControl.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = DeepGate.Views.Controls.AddStringControl.xaml
+build_metadata.AdditionalFiles.TargetPath = Views/Controls/AddStringControl.xaml
+build_metadata.AdditionalFiles.RelativePath = Views/Controls/AddStringControl.xaml
+
+[/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/Views/Controls/ChevronControl.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = DeepGate.Views.Controls.ChevronControl.xaml
+build_metadata.AdditionalFiles.TargetPath = Views/Controls/ChevronControl.xaml
+build_metadata.AdditionalFiles.RelativePath = Views/Controls/ChevronControl.xaml
 
 [/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/Views/MainPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
@@ -59,3 +69,9 @@ build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = DeepGate.Views.Templates.UserTextMessageItemTemplate.xaml
 build_metadata.AdditionalFiles.TargetPath = Views/Templates/UserTextMessageItemTemplate.xaml
 build_metadata.AdditionalFiles.RelativePath = Views/Templates/UserTextMessageItemTemplate.xaml
+
+[/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/Views/ViewCells/HistoryViewCell.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = DeepGate.Views.ViewCells.HistoryViewCell.xaml
+build_metadata.AdditionalFiles.TargetPath = Views/ViewCells/HistoryViewCell.xaml
+build_metadata.AdditionalFiles.RelativePath = Views/ViewCells/HistoryViewCell.xaml

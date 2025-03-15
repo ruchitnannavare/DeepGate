@@ -39,7 +39,7 @@ func GetBestHost(modelName string, redis *clients.RedisClient, logger *log.Logge
 	activeHosts := []string{}
 	for _, hostingServer := range selectedModel.HostingServers {
 		if hostingServer.Status {
-			activeHosts = append(activeHosts, hostingServer.IPAdd)
+			activeHosts = append(activeHosts, hostingServer.HostName)
 		}
 	}
 
@@ -52,7 +52,7 @@ func GetBestHost(modelName string, redis *clients.RedisClient, logger *log.Logge
 			logger.Printf("Error fetching host details for %s: %v", activeHosts[0], err)
 			return nil, err
 		}
-		logger.Printf("Returning single active host: %s", host.IPAdd)
+		logger.Printf("Returning single active host: %s", host.HostName)
 		return host, nil
 	}
 
@@ -84,18 +84,18 @@ func GetBestHost(modelName string, redis *clients.RedisClient, logger *log.Logge
 
 		// Pick the host with the lowest task count
 		var bestHost *models.LLMHost
-		minTaskCount := int(^uint(0) >> 1) // Max int value
+		minTaskCount := 5 // Max int value
 
 		for host := range hostChan {
-			logger.Printf("Host %s has task count: %d", host.IPAdd, host.TaskCount)
-			if host.TaskCount < minTaskCount {
+			logger.Printf("Host %s has task count: %d", host.HostName, len(host.Tasks))
+			if len(host.Tasks) < minTaskCount {
 				bestHost = host
-				minTaskCount = host.TaskCount
+				minTaskCount = len(host.Tasks)
 			}
 		}
 
 		if bestHost != nil {
-			logger.Printf("Selected best host: %s with task count: %d", bestHost.IPAdd, bestHost.TaskCount)
+			logger.Printf("Selected best host: %s with task count: %d", bestHost.HostName, len(bestHost.Tasks))
 			return bestHost, nil
 		}
 	}
@@ -132,16 +132,16 @@ func GetServerToLoad(modelName string, redis *clients.RedisClient, logger *log.L
 	// Find the first inactive server
 	for _, hostingServer := range selectedModel.HostingServers {
 		if !hostingServer.Status { // Inactive server found
-			logger.Printf("Inactive server found: %s", hostingServer.IPAdd)
+			logger.Printf("Inactive server found: %s", hostingServer.HostName)
 
 			// Retrieve server details from Redis
-			host, err := redis.GetLLMHost(context.Background(), hostingServer.IPAdd)
+			host, err := redis.GetLLMHost(context.Background(), hostingServer.HostName)
 			if err != nil {
-				logger.Printf("Error fetching inactive host details (%s): %v", hostingServer.IPAdd, err)
+				logger.Printf("Error fetching inactive host details (%s): %v", hostingServer.HostName, err)
 				return nil, nil, err
 			}
 
-			logger.Printf("Returning inactive host: %s", host.IPAdd)
+			logger.Printf("Returning inactive host: %s", host.HostName)
 			return host, selectedModel, nil
 		}
 	}

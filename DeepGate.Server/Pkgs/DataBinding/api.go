@@ -1,5 +1,8 @@
 package databinding
 
+const NodePort = "8080"
+const HostPort = "9090"
+
 // Message represents a single message in a chat
 type Message struct {
 	Role    string `json:"role"`
@@ -8,8 +11,10 @@ type Message struct {
 
 // ChatCompletion represents a chat completion request
 type ChatCompletion struct {
-	Model    string    `json:"model"`
-	Messages []Message `json:"messages"`
+	Model    string                 `json:"model"`
+	Messages []Message              `json:"messages"`
+	Format   map[string]interface{} `json:"format"`
+	TaskId   string                 `json:"task_id"`
 }
 
 // StreamResponse represents the structure of each streaming response chunk

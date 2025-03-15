@@ -139,6 +139,19 @@ func (o *OllamaClient) StreamChatCompletion(chat databinding.ChatCompletion, res
 	start := time.Now()
 	o.logger.Printf("Starting chat completion streaming for model: %s", chat.Model)
 
+	chat.Format = map[string]interface{}{
+		"type": "object",
+		"properties": map[string]interface{}{
+			"response": map[string]string{
+				"type": "string",
+			},
+			"summary": map[string]string{
+				"type": "string",
+			},
+		},
+		"required": []string{"response", "summary"},
+	}
+
 	// Prepare the request payload
 	jsonData, err := json.Marshal(chat)
 	if err != nil {

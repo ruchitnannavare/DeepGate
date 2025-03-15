@@ -98,7 +98,6 @@ func (hs *HostServer) tryPingNode(ip string) {
 	if resp.StatusCode == http.StatusOK {
 		hs.logger.Printf("Node found at %s!", ip)
 		hs.nodeIP = ip
-		// Optionally, you might want to stop further scanning here
 		return
 	}
 }
@@ -224,10 +223,10 @@ func (hs *HostServer) getActiveIPsDarwin() []string {
 	return ips
 }
 
-func (hs *HostServer) SetupRoutes() *gin.Engine {
+func (hs *HostServer) SetupRoutes(skipScan bool) *gin.Engine {
 	r := gin.Default()
 
-	routeHandler := routes.NewRouteHandler(hs.logger, hs.ollama)
+	routeHandler := routes.NewRouteHandler(hs.logger, hs.ollama, hs.hostName, hs.nodeIP, skipScan)
 	routeHandler.RegisterRoutes(r)
 
 	return r
@@ -239,19 +238,19 @@ func (hs *HostServer) Run(skipScan bool) {
 		hs.ScanNetwork()
 	}
 
-	r := hs.SetupRoutes()
+	r := hs.SetupRoutes(skipScan)
 	hs.logger.Println("Host server starting on 0.0.0.0:9090")
 	r.Run("0.0.0.0:9090")
 }
 
 func main() {
-	//reader := bufio.NewReader(os.Stdin)
-	//fmt.Print("Do you want to run a network scan? (yes/no): ")
-	//input, _ := reader.ReadString('\n')
-	//input = strings.TrimSpace(strings.ToLower(input))
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Do you want to run a network scan? (y/n): ")
+	input, _ := reader.ReadString('\n')
+	input = strings.TrimSpace(strings.ToLower(input))
 
-	//skipScan := (input == "yes" || input == "y")
+	skipScan := (input == "y" || input == "n")
 
 	hostServer := NewHostServer()
-	hostServer.Run(false)
+	hostServer.Run(skipScan)
 }

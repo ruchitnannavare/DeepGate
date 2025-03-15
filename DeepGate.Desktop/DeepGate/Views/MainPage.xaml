@@ -5,8 +5,13 @@
              xmlns:vm="clr-namespace:DeepGate.ViewModels"
              xmlns:sfList="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              xmlns:views="clr-namespace:DeepGate.Views"
+             xmlns:converters="clr-namespace:DeepGate.Converters"
+             xmlns:helpers="clr-namespace:DeepGate.Helpers"
+             xmlns:slider="clr-namespace:Syncfusion.Maui.Sliders;assembly=Syncfusion.Maui.Sliders"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:dataExtensions="clr-namespace:Syncfusion.Maui.DataSource.Extensions;assembly=Syncfusion.Maui.DataSource"
              xmlns:icons="http://www.aathifmahir.com/dotnet/2022/maui/icons"
+             xmlns:dataSource="clr-namespace:Syncfusion.Maui.DataSource;assembly=Syncfusion.Maui.DataSource"
              x:Class="DeepGate.Views.MainPage"
              Background="Black"
              ModelSelectorVisibility="{Binding IsModelSelectionVisible}"
@@ -14,6 +19,7 @@
 
     <ContentPage.Resources>
         <ResourceDictionary>
+            <converters:GroupHeaderConverter x:Key="GroupHeaderConverter"/>
 
             <DataTemplate x:Key="UserTextMessageItemTemplate">
                 <views:UserTextMessageItemTemplate />
@@ -40,11 +46,11 @@
         <!--Background Image-->
         <Image
             Aspect="AspectFill"
-            Source="{Binding ImageUrl}"/>
+            Source="{Binding SelectedWallpaper.Response.Data.Path}"/>
 
         <!--Wallpaper Tint-->
         <Border
-            BackgroundColor="#60000000"
+            BackgroundColor="{Binding BackgroundTintColor}"
             StrokeThickness="0"/>
 
         <!--Container Grid-->
@@ -55,28 +61,145 @@
 
             <!--Side bar-->
             <acrylic:AcrylicView
-                CornerRadius="30"
+                CornerRadius="20"
                 EffectStyle="Dark">
+                <Grid
+                    Padding="20"
+                    RowDefinitions="Auto, *">
+                    <sfList:SfListView
+                        AllowGroupExpandCollapse="True"
+                        ItemSpacing="0, 5"
+                        IsStickyGroupHeader="True"
+                        ScrollBarVisibility="Never"
+                        x:Name="historyCollection"
+                        SelectionMode="Single"
+                        SelectionChangedCommand="{Binding MasterSelectionCommand}"
+                        SelectionChangedCommandParameter="{Binding SelectedItem, Source={x:Reference historyCollection}}"
+                        ItemsSource="{Binding History}">
+                        <sfList:SfListView.DataSource>
+                            <dataSource:DataSource>
+                                <dataSource:DataSource.GroupDescriptors>
+                                    <dataSource:GroupDescriptor
+                                        PropertyName="GroupHeaderDateTime">
+                                            <dataSource:GroupDescriptor.Comparer>
+                                                <helpers:MasterGroupComparer/>
+                                            </dataSource:GroupDescriptor.Comparer>
+                                    </dataSource:GroupDescriptor>
+                                </dataSource:DataSource.GroupDescriptors>
+                                <dataSource:DataSource.SortDescriptors>
+                                    <dataSource:SortDescriptor
+                                        PropertyName="GroupHeaderDateTime" Direction="Ascending"/>
+                                </dataSource:DataSource.SortDescriptors>
+                            </dataSource:DataSource>
+                        </sfList:SfListView.DataSource>
 
+                        <!--Groupheader template-->
+                        <sfList:SfListView.GroupHeaderTemplate>
+                            <DataTemplate
+                                x:DataType="dataExtensions:GroupResult">
+                                <Label Text="{Binding Key}"/>
+                            </DataTemplate>
+                        </sfList:SfListView.GroupHeaderTemplate>
+
+                        <!--Selected item template-->
+                        <sfList:SfListView.SelectedItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    StrokeThickness="0"
+                                    BackgroundColor="#30000000"
+                                    StrokeShape="RoundRectangle 20">
+                                    <views:HistoryViewCell/>
+                                </Border>
+                            </DataTemplate>
+
+                        </sfList:SfListView.SelectedItemTemplate>
+
+                        <!--Item template-->
+                        <sfList:SfListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    StrokeThickness="0"
+                                    BackgroundColor="Transparent"
+                                    StrokeShape="RoundRectangle 20">
+                                    <views:HistoryViewCell/>
+                                </Border>
+                            </DataTemplate>
+                        </sfList:SfListView.ItemTemplate>
+                    </sfList:SfListView>
+                </Grid>
             </acrylic:AcrylicView>
 
+            <!--Main bar-->
             <Grid
                 RowDefinitions="Auto, *, Auto"
                 Grid.Column="1">
-                <Border
-                    Margin="0,0,0,10"
-                    BackgroundColor="#40FFFFFF"
-                    StrokeThickness="0"
-                    StrokeShape="RoundRectangle 15"
-                    Padding="10"
-                    HorizontalOptions="Start">
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ToggleModelSelectorCommand}"/>
-                    </Border.GestureRecognizers>
-                    <Label
-                        Text="deepseek-r1:1.5b"/>
-                </Border>
 
+                <!--Tool bar-->
+                <Grid
+                    ColumnSpacing="10"
+                    ColumnDefinitions="Auto, *, Auto, Auto, Auto">
+                    
+                    <!--Model Selector-->
+                    <Border
+                        Margin="0,0,0,10"
+                        BackgroundColor="#40FFFFFF"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 20"
+                        Padding="10"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Start">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ToggleModelSelectorCommand}"/>
+                        </Border.GestureRecognizers>
+                        <Label
+                            Text="deepseek-r1:1.5b"/>
+                    </Border>
+
+                    <!--New Chat control-->
+                    <Border
+                        Grid.Column="2"
+                        BackgroundColor="#40FFFFFF"
+                        Padding="10"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 25"
+                        VerticalOptions="Start"
+                        HorizontalOptions="End">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding NewChatCommand}"/>
+                        </Border.GestureRecognizers>
+                        <Label
+                           FontSize="20"
+                           icons:MauiIcon.Value="{icons:Cupertino Icon=PlusSquareonSquare}"/>
+                    </Border>
+
+                    <!--Change Wallpaper-->
+                    <Border
+                        Grid.Column="3"
+                        BackgroundColor="#40FFFFFF"
+                        Padding="10"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 25"
+                        VerticalOptions="Start"
+                        HorizontalOptions="End">
+                        <Label
+                           FontSize="20"
+                           icons:MauiIcon.Value="{icons:Fluent Icon=ArrowSync24}"/>
+                    </Border>
+
+                    <!--Wallpaper control-->
+                    <Border
+                        Grid.Column="4"
+                        BackgroundColor="#40FFFFFF"
+                        Padding="10"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 25"
+                        VerticalOptions="Start"
+                        HorizontalOptions="End">
+                        <Label
+                           FontSize="20"
+                           icons:MauiIcon.Value="{icons:Cupertino Icon=PhotoonRectangle}"/>
+                    </Border>
+                </Grid>
 
                 <!--Message Collection\ ItemsSource="{Binding ChatCompletion.Messages}"-->
                 <sfList:SfListView
@@ -113,7 +236,7 @@
                     MinimumHeightRequest="100"
                     VerticalOptions="EndAndExpand"
                     Grid.Row="2"
-                    CornerRadius="30"
+                    CornerRadius="20"
                     EffectStyle="Dark">
                     <Grid
                         Padding="10"
@@ -137,23 +260,40 @@
                         </Label>
                     </Grid>
                 </acrylic:AcrylicView>
-
                 
                 <!--Model selection window-->
                 <acrylic:AcrylicView
+                    Grid.Row="1"
                     x:Name="modelSelector"
                     Opacity="0" 
                     EffectStyle="Dark"
-                    Grid.Row="1"
                     CornerRadius="20"
                     Padding="15, 10, 5, 10"
                     WidthRequest="300"
+                    MinimumHeightRequest="150"
                     HorizontalOptions="Start"
                     VerticalOptions="Start">
                     <sfList:SfListView
                         SelectionBackground="Transparent"
-                        SelectionMode="Single"
+                        SelectionMode="None"
                         ItemsSource="{Binding AvailableModels}">
+
+                        <sfList:SfListView.EmptyView>
+                            <Grid
+                                HeightRequest="100"
+                                ColumnDefinitions="*, Auto, *">
+                                <Label
+                                    Grid.Column="1"
+                                    VerticalOptions="Center"
+                                    Text="Loading"/>
+                                <ActivityIndicator
+                                    Grid.Column="2"
+                                    HorizontalOptions="Start"
+                                    VerticalOptions="Center"
+                                    IsRunning="True"/>
+                            </Grid>
+
+                        </sfList:SfListView.EmptyView>
 
                         <sfList:SfListView.ItemTemplate>
                             <DataTemplate>
@@ -226,6 +366,109 @@
                             </DataTemplate>
                         </sfList:SfListView.ItemTemplate>
                     </sfList:SfListView>
+                </acrylic:AcrylicView>
+
+                <!--Background settings-->
+                <acrylic:AcrylicView
+                    IsVisible="False"
+                    Grid.Row="1"
+                    MaximumWidthRequest="280"
+                    Opacity="1"
+                    EffectStyle="Dark"
+                    CornerRadius="20"
+                    HorizontalOptions="End"
+                    VerticalOptions="Start">
+                    <Grid
+                        IsVisible="True"
+                        RowSpacing="10"
+                        Padding="15"
+                        RowDefinitions="Auto, Auto, Auto, Auto">
+
+                        <Label Text="Background &amp; Theme"/>
+
+                        <!--Opacity changing tile-->
+                        <Border
+                            Padding="10"
+                            StrokeShape="RoundRectangle 10"
+                            BackgroundColor="#30FFFFFF"
+                            StrokeThickness="0"
+                            Grid.Row="1">
+                            <Grid
+                                ColumnDefinitions="Auto, *"
+                                ColumnSpacing="15">
+                                <Label
+                                    VerticalOptions="Center"
+                                    Text="Opacity"/>
+                                <views:ChevronControl
+                                    Grid.Column="1"
+                                    SelectionText="{Binding OpacitySelectionText}"
+                                    RightArrowCommand="{Binding RightClickOpacity}"
+                                    LeftArrowCommand="{Binding LeftClickOpacity}"/>
+                            </Grid>
+                        </Border>
+
+                        <!--Wallpaper changing tile-->
+                        <Border
+                            Padding="10"
+                            StrokeShape="RoundRectangle 10"
+                            BackgroundColor="#30FFFFFF"
+                            StrokeThickness="0"
+                            Grid.Row="2">
+                            <VerticalStackLayout
+                                Spacing="5">
+                                <Label Text="Wallpaper"/>
+                                <Grid
+                                    RowSpacing="10"
+                                    ColumnSpacing="5"
+                                    ColumnDefinitions="*, *"
+                                    RowDefinitions="Auto, Auto, Auto">
+
+                                    <!--Wallpaper Avatar-->
+                                    <Border
+                                        Grid.ColumnSpan="2"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 12">
+                                        <Grid>
+                                            <ActivityIndicator
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="Center"
+                                                IsRunning="True"/>
+                                            <Image
+                                                Aspect="AspectFill"
+                                                HeightRequest="128"
+                                                BackgroundColor="#60000000"
+                                                Source="{Binding SelectedCollection.Response.Data.Thumbs.Small}">
+                                            </Image>
+                                        </Grid>
+                                    </Border>
+
+                                    <!--Select and shuffle buttons-->
+                                    <Button
+                                        VerticalOptions="Start"
+                                        Grid.Row="2"
+                                        Text="Select"/>
+
+                                    <Button
+                                        Grid.Column="1"
+                                        Grid.Row="2"
+                                        Command="{Binding ShuffleCommand}"
+                                        VerticalOptions="Start"
+                                        Text="Shuffle"/>
+
+                                    <views:ChevronControl
+                                        Grid.ColumnSpan="2"
+                                        VerticalOptions="End"
+                                        Grid.Row="1"
+                                        SelectionText="{Binding SelectedCollection.CollectionName}"
+                                        RightArrowCommand="{Binding RightClickWallpaper}"
+                                        LeftArrowCommand="{Binding LeftClickWallpaper}"/>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <views:AddStringControl
+                            Grid.Row="3"/>
+                    </Grid>
                 </acrylic:AcrylicView>
             </Grid>
         </Grid>

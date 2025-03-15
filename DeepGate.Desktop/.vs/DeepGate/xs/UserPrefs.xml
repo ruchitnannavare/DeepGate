@@ -1,62 +1,53 @@
-﻿<Properties NuGet.AddPackagesDialog.IncludePrerelease="True" StartupConfiguration="{EAF584B4-B738-4C51-B173-8B05D574DE8F}|Default">
+﻿<Properties StartupConfiguration="{EAF584B4-B738-4C51-B173-8B05D574DE8F}|Default" NuGet.AddPackagesDialog.IncludePrerelease="True">
   <Debugger.DebugSourceFolders>
     <String>/Users/ruchitnannavare/Library/Caches/VisualStudio/17.0/Symbols/raw.githubusercontent.com/xamarin/xamarin-macios/0ee28379dd5e85c830bad0270d064bbcec467647</String>
   </Debugger.DebugSourceFolders>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.ItemProperties.DeepGate PreferredExecutionTarget="MyAppleMacCatalystID" Xamarin.HotReload.DebuggerTimeoutException.DeepGate.HideInfoBar="True" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="DeepGate/Services/DatabaseHelper.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="DeepGate/DeepGate.csproj">
     <Files>
-      <File FileName="DeepGate/Views/MainPage.xaml" />
-      <File FileName="DeepGate/ViewModels/MainPageViewModel.cs" Line="101" Column="1" />
-      <File FileName="DeepGate/Models/LLM/LanguageModel.cs" Line="1" Column="1" />
-      <File FileName="DeepGate/Services/DeepGateService.cs" Line="1" Column="1" />
-      <File FileName="DeepGate/Services/ApiService.cs" />
-      <File FileName="DeepGate/Platforms/MacCatalyst/SceneDelegate.cs" />
-      <File FileName="DeepGate/Platforms/MacCatalyst/AppDelegate.cs" />
-      <File FileName="DeepGate/Platforms/MacCatalyst/Program.cs" />
-      <File FileName="DeepGate/Platforms/MacCatalyst/Info.plist" />
-      <File FileName="DeepGate/Views/MainPage.xaml.cs" />
-      <File FileName="DeepGate/Interfaces/IDeepGateService.cs" />
-      <File FileName="DeepGate/Helpers/Constants.cs" />
-      <File FileName="DeepGate/Views/Templates/ReceivedMessageItemTemplate.xaml" />
-      <File FileName="DeepGate/Views/Templates/MessageTemplateSelector.cs" />
-      <File FileName="DeepGate/Models/Chat/Message.cs" Line="8" Column="22" />
-      <File FileName="DeepGate/Views/Templates/UserTextMessageItemTemplate.xaml" />
-      <File FileName="../../../../../usr/local/share/dotnet/packs/Microsoft.MacCatalyst.Sdk.net8.0_18.0/18.0.8319/tools/msbuild/iOS/Xamarin.Shared.targets" />
-      <File FileName="DeepGate/DeepGate.csproj" />
-      <File FileName="DeepGate/Converters/StringIsEmptyConverter.cs" />
-      <File FileName="DeepGate/Interfaces/IDatabaseHelper.cs" Line="11" Column="2" />
-      <File FileName="DeepGate/Models/Chat/ChatCompletion.cs" Line="25" Column="16" />
+      <File FileName="DeepGate/Services/DeepGateService.cs" />
+      <File FileName="DeepGate/Models/Wallpaper.cs" />
+      <File FileName="DeepGate/Models/Master.cs" />
+      <File FileName="DeepGate/Models/Responses/WallhavenResponse.cs" />
+      <File FileName="DeepGate/Models/Chat/Message.cs" />
       <File FileName="DeepGate/Models/Chat/ChatHistory.cs" />
-      <File FileName="DeepGate/MauiProgram.cs" Line="85" Column="17" />
-      <File FileName="DeepGate/Models/Enums/ChildType.cs" />
-      <File FileName="DeepGate/Helpers/CustomBsonMapper.cs" Line="5" Column="27" />
-      <File FileName="DeepGate/Services/DatabaseHelper.cs" Line="18" Column="56" NotebookId="1" />
-      <File FileName="DeepGate/Models/Master.cs" Line="25" Column="1" NotebookId="1" />
+      <File FileName="DeepGate/ViewModels/MainPageViewModel.Wallpaper.cs" Line="195" Column="1" />
+      <File FileName="DeepGate/Services/DatabaseHelper.cs" />
+      <File FileName="DeepGate/Views/MainPage.xaml.cs" />
+      <File FileName="DeepGate/Views/Controls/AddStringControl.xaml" />
+      <File FileName="DeepGate/Views/Controls/ChevronControl.xaml.cs" />
+      <File FileName="DeepGate/MauiProgram.cs" />
+      <File FileName="DeepGate/Helpers/Constants.cs" />
+      <File FileName="DeepGate/Interfaces/IWallPaperService.cs" />
+      <File FileName="DeepGate/Interfaces/IDatabaseHelper.cs" />
+      <File FileName="DeepGate/Helpers/ColorHelper.cs" Line="13" Column="1" />
+      <File FileName="DeepGate/Views/Templates/ReceivedMessageItemTemplate.xaml" Line="1" Column="1" />
+      <File FileName="DeepGate/DeepGate.csproj" Line="49" Column="116" />
+      <File FileName="DeepGate/Views/MainPage.xaml" Line="373" Column="38" NotebookId="1" />
+      <File FileName="DeepGate/ViewModels/MainPageViewModel.cs" NotebookId="1" />
+      <File FileName="DeepGate/Views/Controls/ChevronControl.xaml" NotebookId="1" />
+      <File FileName="DeepGate/Services/WallPaperService.cs" NotebookId="1" />
+      <File FileName="DeepGate/Services/ApiService.cs" Line="45" Column="10" NotebookId="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="DeepGate" expanded="True">
             <Node name="DeepGate" selected="True">
-              <Node name="Helpers" expanded="True" />
-              <Node name="Interfaces" expanded="True" />
-              <Node name="Models" expanded="True">
-                <Node name="Chat" expanded="True" />
-                <Node name="Enums" expanded="True" />
-                <Node name="LLM" expanded="True" />
+              <Node name="Resources" expanded="True">
+                <Node name="AppIcon" expanded="True" />
+                <Node name="Images" expanded="True" />
               </Node>
-              <Node name="Services" expanded="True" />
-              <Node name="ViewModels" expanded="True" />
             </Node>
           </Node>
         </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.ItemProperties.DeepGate PreferredExecutionTarget="MyAppleMacCatalystID" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MultiItemStartupConfigurations />
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
 </Properties>

@@ -41,6 +41,8 @@ func (c *ClientHandler) RegisterRoutes(router *gin.Engine) {
 	router.POST("/node/load-model", c.handleClientLoadModel)
 	router.GET("/node/fetch-models", c.handleFetchModels)
 	router.POST("/node/chat", c.handleClientChat)
+
+	router.POST("/node/gethost", c.handleGetHost)
 }
 
 // handleFetchModels fetches available models from Redis
@@ -91,9 +93,9 @@ func (c *ClientHandler) handleClientLoadModel(gc *gin.Context) {
 
 	// Update HostingServer status to active
 	for i, server := range selectedModel.HostingServers {
-		if server.IPAdd == inactiveHost.HostInfo.IPAddress {
+		if server.HostName == inactiveHost.HostInfo.HostName {
 			selectedModel.HostingServers[i].Status = true
-			c.logger.Printf("Updated server %s status to active", server.IPAdd)
+			c.logger.Printf("Updated server %s status to active", server.HostName)
 			break
 		}
 	}
@@ -166,4 +168,39 @@ func (c *ClientHandler) handleClientChat(gc *gin.Context) {
 			}
 		}
 	})
+}
+
+// handleClientChat handles chat requests with AI models
+func (c *ClientHandler) handleGetHost(gc *gin.Context) {
+	var request struct {
+		TaskId string `json:"task_id" binding:"required"`
+		Model  string `json:"model" binding:"required"`
+	}
+
+	if err := gc.ShouldBindJSON(&request); err != nil {
+		c.logger.Printf("Invalid request format: %v", err)
+		gc.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request format"})
+		return
+	}
+
+	// Get best available host
+	bestHost, err := logic.GetBestHost(request.Model, c.redis, c.logger)
+	if err != nil {
+		c.logger.Printf("Failed to find best host: %v", err)
+		gc.JSON(http.StatusInternalServerError, gin.H{"error": "No available host"})
+		return
+	}
+
+	bestHost.Tasks = append(bestHost.Tasks, request.TaskId)
+
+	// Save updated model back to Redis
+	err = c.redis.SaveLLMHost(context.Background(), *bestHost)
+	if err != nil {
+		c.logger.Printf("Failed to update model in Redis: %v", err)
+		gc.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update model status"})
+		return
+	}
+
+	// Return models as JSON response
+	gc.JSON(http.StatusOK, gin.H{"hostIp": bestHost.HostInfo.IPAddress, "hostName": bestHost.HostInfo.HostName})
 }

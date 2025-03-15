@@ -88,6 +88,7 @@ public static class MauiProgram
         // Services
         builder.Services.AddSingleton<HttpClient>();
         builder.Services.AddSingleton(BsonMapper.Global);
+        builder.Services.AddSingleton(Preferences.Default);
         builder.Services.AddSingleton<IApiService, ApiService>();
         builder.Services.AddSingleton<IDeepGateService, DeepGateService>();
         builder.Services.AddSingleton<IWallPaperService, WallPaperService>();

@@ -27,6 +27,27 @@ namespace DeepGate.Models
         [ObservableProperty]
         DateTime dateTime;
 
+        public string GroupHeaderDateTime
+        {
+            get
+            {
+                DateTime yesterday = DateTime.Now.Date.AddDays(-1);
+
+                if (DateTime.Date == yesterday)
+                {
+                    return "Yesterday";
+                }
+
+                if (DateTime.Date == DateTime.Now.Date)
+                {
+                    return "Today";
+                }
+
+                // For all other dates, return in the desired format
+                return DateTime.ToString("dd MMM");
+            }
+        }
+
         public Master() { }
     }
 }

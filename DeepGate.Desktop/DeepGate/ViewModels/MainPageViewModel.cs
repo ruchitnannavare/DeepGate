@@ -18,6 +18,9 @@ public partial class MainPageViewModel: ObservableObject
     private readonly IWallPaperService wallPaperService;
     private readonly IDeepGateService deepGateService;
     private readonly IDataBaseHelper dataBaseHelper;
+    private readonly IPreferences preferences;
+
+    private bool isFirstLaunch;
 
     #endregion
 
@@ -30,9 +33,6 @@ public partial class MainPageViewModel: ObservableObject
 
     [ObservableProperty]
     private ObservableCollection<LanguageModel> availableModels;
-
-    [ObservableProperty]
-    private string? imageUrl;
 
     [ObservableProperty]
     private double editorHeight;
@@ -62,6 +62,9 @@ public partial class MainPageViewModel: ObservableObject
 
     public ICommand ToggleModelSelectorCommand { get; }
 
+    public ICommand MasterSelectionCommand { get; }
+
+    public ICommand NewChatCommand { get; }
 
     #endregion
 
@@ -69,46 +72,46 @@ public partial class MainPageViewModel: ObservableObject
         IApiService apiService,
         IWallPaperService wallPaperService,
         IDeepGateService deepGateService,
-        IDataBaseHelper dataBaseHelper)
-	{
+        IDataBaseHelper dataBaseHelper,
+        IPreferences preferences)
+    {
         this.apiService = apiService;
         this.wallPaperService = wallPaperService;
         this.deepGateService = deepGateService;
         this.dataBaseHelper = dataBaseHelper;
+        this.preferences = preferences;
+
+        isFirstLaunch = preferences.Get<string?>(Constants.FirstBoot, null) == null;
 
         SendMessageCommand = new Command(() => SendMessageCommandExecute());
         ToggleModelSelectorCommand = new Command(() => ToggleModelSelectorCommandExecute());
         LoadModelCommand = new Command<LanguageModel>((model) => LoadModelCommandExecute(model));
+        MasterSelectionCommand = new Command<Master>((model) => MasterSelectionCommandExecute(model));
+        NewChatCommand = new Command(() => NewChatCommandExecute());
+
+        InitializeWallpaperCommands();
 
         InitializeDeepGateClient();
-	}
+    }
 
     private void InitializeDeepGateClient()
     {
         FetchMasterCollection();
         SetUpNewChat();
-        GetBackGroundImage();
         FetchModels();
     }
 
     private async void FetchMasterCollection()
     {
-        try
-        {
-            var allInstances = await dataBaseHelper.GetAllInstances();
-            History = new ObservableCollection<Master>(allInstances);
-            Console.WriteLine(allInstances.ToString());
-        }
-        catch (Exception ex)
-        {
-
-        }
+        var allInstances = await dataBaseHelper.GetAllInstances();
+        History = new ObservableCollection<Master>(allInstances);
+        Console.WriteLine(allInstances.ToString());
     }
 
     private void SetUpNewChat()
     {
         ChatCompletion = new ChatCompletion();
-        ChatCompletion.Messages = new List<Message> { new Message { Role = Constants.SystemRole, Content = "You are a very helpful assistant and the user needs your helping him do day to day tasks or maybe answer some weird questions. When asked about your name, tell them you are Tinkerbell from a fairyland vast away, give made up details but never tell them what you truely are." } };
+        ChatCompletion.Messages = new List<Message> { new Message { Role = Constants.SystemRole, Content = Constants.BasePrompt } };
         CurrentMessages = new ObservableCollection<Message>();
     }
 
@@ -173,24 +176,41 @@ public partial class MainPageViewModel: ObservableObject
             });
         }
 
-
-
         //TODO: Add return value optimization later
         newAnswer.IsCompleted = true;
         ChatCompletion?.Messages?.Add(newAnswer);
         return true;
     }
 
-    private async void GetBackGroundImage()
-    {
-        // Ice 431xzv
-        // Mountains 4gogwd
-        ImageUrl = await wallPaperService.GetImageURLForId("4gogwd");
-    }
 
     #endregion
 
     #region Command Execution
+
+
+    private void NewChatCommandExecute()
+    {
+        if (CurrentMessages.Count > 0)
+        {
+            NewMessage = string.Empty;
+            SetUpNewChat();
+        }
+    }
+
+    private void MasterSelectionCommandExecute(Master model)
+    {
+        NewMessage = string.Empty;
+        ChatCompletion = model.ChatCompletion;
+        currentMasterModel = model;
+        if (ChatCompletion?.Messages != null && ChatCompletion.Messages.Count > 0)
+        {
+            CurrentMessages = new ObservableCollection<Message>(ChatCompletion.Messages.Skip(1));
+        }
+        else
+        {
+            CurrentMessages = new ObservableCollection<Message>();
+        }
+    }
 
     private async void LoadModelCommandExecute(LanguageModel model)
     {
@@ -206,8 +226,9 @@ public partial class MainPageViewModel: ObservableObject
         IsModelSelectionVisible = !IsModelSelectionVisible;
     }
 
-    private async void SendMessageCommandExecute()    {
-        if (!string.IsNullOrEmpty(NewMessage) & !string.IsNullOrEmpty(ChatCompletion.Model))
+    private async void SendMessageCommandExecute()
+    {
+        if (!string.IsNullOrEmpty(NewMessage) & !string.IsNullOrEmpty(ChatCompletion.Model) & !IsBusy)
         {
             try
             {
@@ -231,8 +252,8 @@ public partial class MainPageViewModel: ObservableObject
                     {
                         GenerateCurrentMaster();
                         History.Add(currentMasterModel);
+                        History = new ObservableCollection<Master>(History.OrderByDescending(m => m.DateTime));
                     }
-                    currentMasterModel.ChatCompletion = this.ChatCompletion;
                     await dataBaseHelper.AddOrUpdateMasterInstance(currentMasterModel);
                 }
             }
@@ -260,10 +281,6 @@ public partial class MainPageViewModel: ObservableObject
     #endregion
 
     #region Support
-
-    //private Task SaveMasterModelInstance()
-    //{
-    //}
 
     #endregion
 

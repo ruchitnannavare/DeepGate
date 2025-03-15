@@ -35,7 +35,6 @@ public class DeepGateService: IDeepGateService
 
         try
         {
-            //ModelLoadingStatus = $"Loading model: {modelName}";
             loadingStatus(true);
             var baseURL = Constants.LocalhostBaseURL + Constants.HostPort;
             var endPoint = serverEnvironment + LoadModelApi;
@@ -47,13 +46,10 @@ public class DeepGateService: IDeepGateService
 
             var response = await apiService.PostAsync<Dictionary<string, object>>(baseURL, endPoint, payload);
 
-            // If we get here, the model loaded successfully
-            //ModelLoadingStatus = $"Successfully loaded model: {modelName}";
             return true;
         }
         catch (Exception ex)
         {
-            //ModelLoadingStatus = $"Error loading model {modelName}: {ex.Message}";
             throw new Exception($"Failed to load model {modelName}", ex);
         }
         finally

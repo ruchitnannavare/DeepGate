@@ -1,9 +1,11 @@
 ﻿using System;
+using DeepGate.Models;
+
 namespace DeepGate.Interfaces;
 
 public interface IWallPaperService
 {
-	Task<string> GetImageURLForId(string wallhavenImageId);
+	Task<WallhavenResponse> GetImageURLForId(string wallhavenImageId);
 }
 
 

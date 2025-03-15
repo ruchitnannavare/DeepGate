@@ -26,17 +26,41 @@ func NewHostHandler(logger *log.Logger, redis *clients.RedisClient) *HostHandler
 
 // RegisterRoutes registers all host-related routes
 func (h *HostHandler) RegisterRoutes(router *gin.Engine) {
-	// @Summary Host Ping
-	// @Description Receives a ping request from a host and updates model information
-	// @Tags hosts
-	// @Accept  json
-	// @Produce  json
-	// @Param infoPackage body databinding.InfoPackage true "Host information package"
-	// @Success 200 {object} map[string]string "status: received"
-	// @Failure 400 {object} map[string]string "error: Invalid request"
-	// @Failure 500 {object} map[string]string "error: Failed to fetch model list"
-	// @Router /ping [post]
 	router.POST("/ping", h.handlePing)
+	router.POST("/node/complete-task", h.handleCompleteTask)
+}
+
+// handleCompleteTask handles the complete task request from hosts
+func (h *HostHandler) handleCompleteTask(c *gin.Context) {
+	var request struct {
+		TaskId   string `json:"task_id" binding:"required"`
+		HostName string `json:"host_name" binding:"required"`
+	}
+	if err := c.BindJSON(&request); err != nil {
+		h.logger.Printf("Invalid task request: %v", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	host, err := h.redis.GetLLMHost(context.Background(), request.HostName)
+	if err != nil {
+		h.logger.Printf("Failed to get LLMHost from Redis: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get host information"})
+		return
+	}
+
+	// Filter out the TaskId from host.Tasks
+	filteredTasks := make([]string, 0, len(host.Tasks))
+	for _, task := range host.Tasks {
+		if task != request.TaskId {
+			filteredTasks = append(filteredTasks, task)
+		}
+	}
+	host.Tasks = filteredTasks
+
+	h.redis.SaveLLMHost(context.Background(), *host)
+
+	c.JSON(http.StatusOK, gin.H{"status": "task " + request.TaskId + " completed"})
 }
 
 // handlePing handles the ping request from hosts
@@ -71,7 +95,7 @@ func (h *HostHandler) handlePing(c *gin.Context) {
 
 	// Create LLMHost object to maintain host and model information
 	llmHost := models.LLMHost{
-		IPAdd:     infoPackage.IPAddress,
+		HostName:  infoPackage.HostName,
 		HostInfo:  infoPackage,
 		ModelInfo: hostModels,
 	}
@@ -104,22 +128,22 @@ func (h *HostHandler) handlePing(c *gin.Context) {
 			// Update existing model's host list
 			hostExists := false
 			for _, host := range existingModel.HostingServers {
-				if host.IPAdd == infoPackage.IPAddress {
+				if host.HostName == infoPackage.HostName {
 					hostExists = true
 					break
 				}
 			}
 			if !hostExists {
 				hostingServer := models.HostingServer{
-					IPAdd:  infoPackage.IPAddress,
-					Status: false,
+					HostName: infoPackage.HostName,
+					Status:   false,
 				}
 				existingModel.HostingServers = append(existingModel.HostingServers, hostingServer)
 			}
 		} else {
 			hostingServer := models.HostingServer{
-				IPAdd:  infoPackage.IPAddress,
-				Status: false,
+				HostName: infoPackage.HostName,
+				Status:   false,
 			}
 			newModel := models.LLModel{
 				Modelinfo:      hostModel,
@@ -136,6 +160,6 @@ func (h *HostHandler) handlePing(c *gin.Context) {
 		return
 	}
 
-	h.logger.Printf("Received ping from %s", infoPackage.IPAddress)
+	h.logger.Printf("Received ping from %s", infoPackage.HostName)
 	c.JSON(http.StatusOK, gin.H{"status": "received"})
 }

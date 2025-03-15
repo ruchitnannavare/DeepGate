@@ -82,6 +82,7 @@
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/Syncfusion.Maui.Popup.dll
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/Syncfusion.Maui.ProgressBar.dll
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/Syncfusion.Maui.PullToRefresh.dll
+/Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/Syncfusion.Maui.Sliders.dll
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/Syncfusion.Maui.TabView.dll
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/DeepGate.dll
 /Users/ruchitnannavare/GitHub/DeathStar/DeepGate.Desktop/DeepGate/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/publish/../DeepGate.app/Contents/MonoBundle/Microsoft.CSharp.dll

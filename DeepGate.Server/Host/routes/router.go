@@ -13,14 +13,20 @@ import (
 )
 
 type RouteHandler struct {
-	logger *log.Logger
-	ollama *clients.OllamaClient
+	logger   *log.Logger
+	ollama   *clients.OllamaClient
+	nodeIP   string
+	skipScan bool
+	hostName string
 }
 
-func NewRouteHandler(logger *log.Logger, ollamaClient *clients.OllamaClient) *RouteHandler {
+func NewRouteHandler(logger *log.Logger, ollamaClient *clients.OllamaClient, hostName string, nodeIP string, skipScan bool) *RouteHandler {
 	return &RouteHandler{
-		logger: logger,
-		ollama: ollamaClient,
+		logger:   logger,
+		ollama:   ollamaClient,
+		nodeIP:   nodeIP,
+		skipScan: skipScan,
+		hostName: hostName,
 	}
 }
 
@@ -132,4 +138,16 @@ func (r *RouteHandler) handleChatCompletion(c *gin.Context) {
 			return false
 		}
 	})
+
+	if !r.skipScan {
+		go func() {
+			jsonPayload := map[string]interface{}{
+				"task_id":   chatRequest.TaskId,
+				"host_name": r.hostName,
+			}
+
+			tempClient := clients.MakeTemporaryAPIClient(r.nodeIP, databinding.NodePort)
+			tempClient.MakeRequest("POST", "/node/complete-task", jsonPayload, nil)
+		}()
+	}
 }

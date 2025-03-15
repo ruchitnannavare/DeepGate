@@ -117,13 +117,13 @@ func (rc *RedisClient) SaveLLMHost(ctx context.Context, host models.LLMHost) err
 		return fmt.Errorf("failed to marshal host: %v", err)
 	}
 
-	key := LLMHostKeyPrefix + host.HostInfo.IPAddress
+	key := LLMHostKeyPrefix + host.HostInfo.HostName
 	return rc.client.Set(ctx, key, data, DefaultTTL).Err()
 }
 
 // GetLLMHost retrieves a host by its IP address
-func (rc *RedisClient) GetLLMHost(ctx context.Context, ipAddress string) (*models.LLMHost, error) {
-	key := LLMHostKeyPrefix + ipAddress
+func (rc *RedisClient) GetLLMHost(ctx context.Context, hostName string) (*models.LLMHost, error) {
+	key := LLMHostKeyPrefix + hostName
 	data, err := rc.client.Get(ctx, key).Bytes()
 	if err == redis.Nil {
 		return nil, nil
