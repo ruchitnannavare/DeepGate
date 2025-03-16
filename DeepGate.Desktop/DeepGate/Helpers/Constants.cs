@@ -9,8 +9,12 @@ public static class Constants
     public const string AssistantRole = "assistant";
     public const string Host = "host";
     public const string Node = "node";
-    public static string LocalhostBaseURL = "http://127.0.0.1:";
+    public static string LocalhostURL = "127.0.0.1";
+
+    public static string BaseURLFormat = "http://{0}:{1}";
+
     public static string HostPort = "9090";
+    public static string NodePort = "8080";
     public const string FirstBoot = "bootupSequence";
 
 

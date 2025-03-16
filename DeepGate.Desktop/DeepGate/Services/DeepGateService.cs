@@ -5,6 +5,7 @@ using System.Text.Json;
 using DeepGate.Helpers;
 using DeepGate.Interfaces;
 using DeepGate.Models;
+using DeepGate.Models.Responses;
 
 namespace DeepGate.Services;
 
@@ -20,13 +21,14 @@ public class DeepGateService: IDeepGateService
     public const string LoadModelApi = "/load-model";
     public const string ChatCompletionApi = "/chat";
     public const string FetchModelListApi = "/fetch-models";
+    public const string GetSortedHostApi = "/get-host";
 
     public DeepGateService(IApiService apiService)
     {
         this.apiService = apiService;
     }
 
-    public async Task<bool> LoadModel(string modelName, Action<bool> loadingStatus, string serverEnvironment = Constants.Host)
+    public async Task<bool> LoadModel(string modelName, Action<bool> loadingStatus, string port, string serverEnvironment)
     {
         if (string.IsNullOrEmpty(modelName))
         {
@@ -36,7 +38,7 @@ public class DeepGateService: IDeepGateService
         try
         {
             loadingStatus(true);
-            var baseURL = Constants.LocalhostBaseURL + Constants.HostPort;
+            var baseURL = string.Format(Constants.BaseURLFormat, Constants.LocalhostURL, port);
             var endPoint = serverEnvironment + LoadModelApi;
 
             var payload = new Dictionary<string, object>
@@ -58,11 +60,11 @@ public class DeepGateService: IDeepGateService
         }
     }
 
-    public async Task<List<LanguageModel>> FetchAvailableModels(string serverEnvironment = Constants.Host)
+    public async Task<List<LanguageModel>> FetchAvailableModels(string port, string serverEnvironment)
     {
         try
         {
-            var baseURL = Constants.LocalhostBaseURL + Constants.HostPort;
+            var baseURL = string.Format(Constants.BaseURLFormat, Constants.LocalhostURL, port);
             var endPoint = serverEnvironment + FetchModelListApi;
 
             var models = await apiService.GetAsync<ModelsList>(baseURL, endPoint);
@@ -75,12 +77,14 @@ public class DeepGateService: IDeepGateService
         }
     }
 
-    public async Task<bool> GetChatCompletion(ChatCompletion chats, Action<string> answer, string serverEnvironment = Constants.Host)
+    public async Task<bool> GetChatCompletion(ChatCompletion chats, Action<string> answer, string hostIp)
     {
         try
         {
-            var baseURL = Constants.LocalhostBaseURL + Constants.HostPort;
-            var endPoint = serverEnvironment + ChatCompletionApi;
+            chats.TaskId = Guid.NewGuid().ToString();
+
+            var baseURL = string.Format(Constants.BaseURLFormat, hostIp, Constants.HostPort);
+            var endPoint = Constants.Host + ChatCompletionApi;
 
             using var request = new HttpRequestMessage(HttpMethod.Post, $"{baseURL}/{endPoint}");
             request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("text/event-stream"));
@@ -140,11 +144,27 @@ public class DeepGateService: IDeepGateService
                 }
             });
             return true;
-        }
+        }                                                                                                                                                                                            
         catch (Exception ex)
         {
             System.Console.WriteLine("An error occurred while fetching chat completion: " + ex.Message);
             return false;
+        }
+    }
+
+    public async Task<NodeSortedHostResponse> GetSortedHost(string port)
+    {
+        try
+        {
+            var baseURL = string.Format(Constants.BaseURLFormat, Constants.LocalhostURL, port);
+            var endPoint = Constants.Node + GetSortedHostApi;
+
+            var response = await apiService.GetAsync<NodeSortedHostResponse>(baseURL, endPoint);
+            return response;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Failed to get sorted host: {ex.Message}", ex);
         }
     }
 }

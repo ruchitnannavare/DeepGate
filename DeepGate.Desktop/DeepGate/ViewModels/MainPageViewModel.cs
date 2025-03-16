@@ -17,6 +17,7 @@ public partial class MainPageViewModel: ObservableObject
     private readonly IApiService apiService;
     private readonly IWallPaperService wallPaperService;
     private readonly IDeepGateService deepGateService;
+    private readonly IDisplayAlertService displayAlertService;
     private readonly IDataBaseHelper dataBaseHelper;
     private readonly IPreferences preferences;
 
@@ -27,6 +28,9 @@ public partial class MainPageViewModel: ObservableObject
     #region Properties
 
     private Master currentMasterModel;
+
+    [ObservableProperty]
+    public string currentServerType;
 
     [ObservableProperty]
     private bool isModelSelectionVisible;
@@ -73,13 +77,15 @@ public partial class MainPageViewModel: ObservableObject
         IWallPaperService wallPaperService,
         IDeepGateService deepGateService,
         IDataBaseHelper dataBaseHelper,
-        IPreferences preferences)
+        IPreferences preferences,
+        IDisplayAlertService displayAlertService)
     {
         this.apiService = apiService;
         this.wallPaperService = wallPaperService;
         this.deepGateService = deepGateService;
         this.dataBaseHelper = dataBaseHelper;
         this.preferences = preferences;
+        this.displayAlertService = displayAlertService;
 
         isFirstLaunch = preferences.Get<string?>(Constants.FirstBoot, null) == null;
 
@@ -98,7 +104,38 @@ public partial class MainPageViewModel: ObservableObject
     {
         FetchMasterCollection();
         SetUpNewChat();
-        FetchModels();
+        _ = ServerSelection();
+    }
+
+    private async Task ServerSelection()
+    {
+        var result = await displayAlertService.ShowAlert(
+            "Server connection option",
+            "Select what 0-898",
+            Constants.Host,
+            Constants.Node
+        );
+        switch (result)
+        {
+            case Constants.Host:
+                CurrentServerType = Constants.Host;
+                break;
+
+            case Constants.Node:
+                CurrentServerType = Constants.Node;
+                break;
+
+            default:
+                await displayAlertService.ShowAlert(
+                    "Error",
+                    "Invalid server selection",
+                    "OK",
+                    "Cancel"
+                );
+                break;
+        }
+
+        _ = FetchModels(CurrentServerType);
     }
 
     private async void FetchMasterCollection()
@@ -117,73 +154,7 @@ public partial class MainPageViewModel: ObservableObject
 
     #region Methods
 
-    #region API Methods
-
-    private async void FetchModels()
-    {
-        try
-        {
-            var modelList = await deepGateService.FetchAvailableModels(Constants.Host);
-            AvailableModels = new ObservableCollection<LanguageModel>(modelList);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Exception in {nameof(deepGateService)}.{nameof(deepGateService.FetchAvailableModels)}: {ex.Message}");
-
-            // Show an alert in the UI
-            await MainThread.InvokeOnMainThreadAsync(async () =>
-            {
-                bool retry = await Application.Current.MainPage.DisplayAlert(
-                    "Connection Error",
-                    "Cannot connect to host server. Please make sure you either have Host or Node server running.",
-                    "Retry",
-                    "Cancel"
-                );
-
-                if (retry)
-                {
-                    FetchModels(); // Retry fetching
-                }
-            });
-        }
-    }
-
-    private async Task<bool> GetLLMReply()
-    {
-        var newAnswer = new Message
-        {
-            Role = Constants.AssistantRole,
-            Content = "",
-        };
-
-        CurrentMessages.Add(newAnswer);
-        var chatCompletion = await deepGateService.GetChatCompletion(ChatCompletion, (answer) => newAnswer.Content = answer, Constants.Host);
-        if (!chatCompletion)
-        {
-            await MainThread.InvokeOnMainThreadAsync(async () =>
-            {
-                bool retry = await Application.Current.MainPage.DisplayAlert(
-                    "Connection Error",
-                    "Cannot connect to host server. Please make sure you either have Host or Node server running.",
-                    "Retry",
-                    "Cancel"
-                );
-
-                if (retry)
-                {
-                    await GetLLMReply(); // Retry getting LLM reply
-                }
-            });
-        }
-
-        //TODO: Add return value optimization later
-        newAnswer.IsCompleted = true;
-        ChatCompletion?.Messages?.Add(newAnswer);
-        return true;
-    }
-
-
-    #endregion
+    
 
     #region Command Execution
 
@@ -214,7 +185,9 @@ public partial class MainPageViewModel: ObservableObject
 
     private async void LoadModelCommandExecute(LanguageModel model)
     {
-        var modelLoaded = await deepGateService.LoadModel(model.Name, (status) => model.IsLoading = status, Constants.Host);
+        var hostPort = CurrentServerType == Constants.Host ? Constants.HostPort : Constants.NodePort;
+        var modelLoaded = await deepGateService.LoadModel(model.Name, (status) => model.IsLoading = status, hostPort, CurrentServerType);
+
         if (modelLoaded)
         {
             ChatCompletion.Model = model.Name;
@@ -251,8 +224,11 @@ public partial class MainPageViewModel: ObservableObject
                     if (CurrentMessages.Count == 2)
                     {
                         GenerateCurrentMaster();
-                        History.Add(currentMasterModel);
-                        History = new ObservableCollection<Master>(History.OrderByDescending(m => m.DateTime));
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            History.ToList().Add(currentMasterModel);
+                            History = new ObservableCollection<Master>(History.OrderByDescending(m => m.DateTime));
+                        });
                     }
                     await dataBaseHelper.AddOrUpdateMasterInstance(currentMasterModel);
                 }

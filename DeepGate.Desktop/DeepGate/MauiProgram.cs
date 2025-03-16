@@ -93,6 +93,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IDeepGateService, DeepGateService>();
         builder.Services.AddSingleton<IWallPaperService, WallPaperService>();
         builder.Services.AddSingleton<IDataBaseHelper, DatabaseHelper>();
+        builder.Services.AddSingleton<IDisplayAlertService, DisplayAlertService>();
 
         return builder;
     }

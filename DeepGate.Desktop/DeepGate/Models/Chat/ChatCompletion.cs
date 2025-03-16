@@ -24,6 +24,11 @@ public partial class ChatCompletion: ObservableObject
 	[ObservableProperty]
 	public List<Message>? messages;
 
-	public ChatCompletion() { }
+    /// </summary>
+    [BsonField]
+    [ObservableProperty]
+    public string? taskId;
+
+    public ChatCompletion() { }
 }
 
