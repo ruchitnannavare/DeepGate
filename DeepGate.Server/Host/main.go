@@ -232,10 +232,10 @@ func (hs *HostServer) SetupRoutes(skipScan bool) *gin.Engine {
 	return r
 }
 
-func (hs *HostServer) Run(skipScan bool) {
+func (hs *HostServer) Run(skipScan bool, nodeIp string) {
 	// Ask whether to scan the network
-	if skipScan {
-		hs.ScanNetwork()
+	if !skipScan {
+		hs.tryPingNode(nodeIp)
 	}
 
 	r := hs.SetupRoutes(skipScan)
@@ -245,12 +245,12 @@ func (hs *HostServer) Run(skipScan bool) {
 
 func main() {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Do you want to run a network scan? (y/n): ")
+	fmt.Print("Please enter IP address of node and leave blank for self-hosting: ")
 	input, _ := reader.ReadString('\n')
 	input = strings.TrimSpace(strings.ToLower(input))
 
-	skipScan := (input == "y" || input == "n")
+	skipScan := (input == "")
 
 	hostServer := NewHostServer()
-	hostServer.Run(skipScan)
+	hostServer.Run(skipScan, input)
 }

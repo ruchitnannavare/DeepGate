@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net"
 
 	databinding "Pkgs/DataBinding"
 
@@ -9,14 +10,11 @@ import (
 	"node/routes"
 
 	"github.com/gin-gonic/gin"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type NodeServer struct {
 	logger             *log.Logger
 	databaseConnection *databinding.DatabaseConnections
-	hostIP             string
 	APIRepo            *clients.APIClient
 	redis              *clients.RedisClient
 }
@@ -38,6 +36,21 @@ func NewNodeServer() *NodeServer {
 	}
 }
 
+func (ns *NodeServer) getLocalIP() string {
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		return ""
+	}
+	for _, addr := range addrs {
+		if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+			if ipnet.IP.To4() != nil {
+				return ipnet.IP.String()
+			}
+		}
+	}
+	return ""
+}
+
 func (ns *NodeServer) SetupRoutes() *gin.Engine {
 	r := gin.Default()
 	// Initialize and register host routes
@@ -49,13 +62,13 @@ func (ns *NodeServer) SetupRoutes() *gin.Engine {
 	clientHandler := routes.NewClientHandler(ns.logger, ns.redis)
 	clientHandler.RegisterRoutes(r)
 
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
 	return r
 }
 
 func (ns *NodeServer) Run() {
 	r := ns.SetupRoutes()
+	nodeIp := ns.getLocalIP()
+	ns.logger.Println("Find node at ip: " + nodeIp)
 	ns.logger.Println("Node server starting on 0.0.0.0:8080")
 	r.Run("0.0.0.0:8080")
 }
