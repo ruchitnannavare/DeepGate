@@ -42,7 +42,7 @@ func (c *ClientHandler) RegisterRoutes(router *gin.Engine) {
 	router.GET("/node/fetch-models", c.handleFetchModels)
 	router.POST("/node/chat", c.handleClientChat)
 
-	router.POST("/node/gethost", c.handleGetHost)
+	router.POST("/node/get-host", c.handleGetHost)
 }
 
 // handleFetchModels fetches available models from Redis
